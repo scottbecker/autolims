@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['scott-vm','*','10.0.2.15']
 # Application definition
 
 INSTALLED_APPS = [
+    'autolims.apps.AutolimsConfig',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,6 +59,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -76,8 +78,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'autolims',
+        'USER': 'autolims_user',
+        'PASSWORD': 'qW9yJQmYpBjsfhPt',
+        'HOST': 'scott-vm',
+        'PORT': '',
     }
 }
 

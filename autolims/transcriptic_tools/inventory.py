@@ -1,4 +1,4 @@
-from transcriptic_tools.enums import Reagent, Temperature
+from .enums import Reagent, Temperature
 
 
 

@@ -10,7 +10,7 @@ from autoprotocol.container_type import _CONTAINER_TYPES
 from autoprotocol.protocol import (Protocol, Well, Container, is_valid_well,
                                    WellGroup, Uncover, Ref)
 from autoprotocol.instruction import Incubate
-from transcriptic_tools.utils import (ul, get_well_dead_volume,
+from .utils import (ul, get_well_dead_volume,
                                       get_well_max_volume, assert_valid_volume, ml,
                                       space_available, get_well_safe_volume, ensure_list,
                                       init_inventory_container, total_plate_volume,
@@ -22,11 +22,11 @@ from transcriptic_tools.utils import (ul, get_well_dead_volume,
                                       convert_mass_to_volume, ug, round_volume,
                                       calculate_dilution_volume, mM, uM, copy_cell_line_name, copy_well_names,
                                       convert_string_to_unit, get_diluent_volume)
-from lib import lists_intersect, get_dict_optional_value, get_melting_temp
-from transcriptic_tools.enums import Reagent, Antibiotic, Temperature
+from ..lib import lists_intersect, get_dict_optional_value, get_melting_temp
+from .enums import Reagent, Antibiotic, Temperature
 from instruction import MiniPrep
 from Bio.SeqUtils import GC
-from transcriptic_tools.inventory import get_transcriptic_inventory
+from inventory import get_transcriptic_inventory
 from autoprotocol.util import make_gel_extract_params, make_band_param
 
 

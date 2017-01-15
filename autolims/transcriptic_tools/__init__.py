@@ -1,1 +1,1 @@
-from transcriptic_tools.custom_protocol import CustomProtocol
+from .custom_protocol import CustomProtocol
