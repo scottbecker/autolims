@@ -6,7 +6,10 @@ from django.contrib.postgres.fields import JSONField
 from django.utils.encoding import python_2_unicode_compatible
 from transcriptic_tools import utils
 from transcriptic_tools.utils import _CONTAINER_TYPES
-from transcriptic_tools.enums import Temperature
+from transcriptic_tools.enums import Temperature, CustomEnum
+
+from db_file_storage.model_utils import delete_file, delete_file_if_needed
+
 
 COVER_TYPES = set()
     
@@ -20,6 +23,11 @@ SAMPLE_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound'
 TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 
 RUN_STATUS_CHOICES = ['complete','accepted','in-progress','aborted','canceled']
+
+
+EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instruction']
+
+DATA_TYPES = ['image_plate','platereader','measure']
 
 DEFAULT_ORGANIZATION = 1
 
@@ -44,7 +52,7 @@ class Organization(models.Model):
 @python_2_unicode_compatible
 class Project(models.Model):
     
-    name = models.CharField(max_length=200,null=True)
+    name = models.CharField(max_length=200,null=True,blank=True)
     
     bsl = models.IntegerField(default=1,blank=False,null=False)
     
@@ -102,7 +110,13 @@ class Run(models.Model):
     
     #we don't know what issued means
 
-    updated_at = models.DateTimeField(auto_now=True)    
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    refs = models.ManyToManyField('Sample', related_name='related_runs', 
+                                 related_query_name='related_run',
+                                 db_constraint=True)
+                                 
+    
     
     def __str__(self):
         return self.title     
@@ -221,6 +235,127 @@ class Aliquot(models.Model):
     def __str__(self):
         return '%s/%s'%self.container.label,self.well_idx
     
+    
+    
+@python_2_unicode_compatible
+class Instruction(models.Model):
+    
+    
+    run = models.ForeignKey(Run,
+                            on_delete=models.CASCADE,
+                            related_name='instructions',
+                            related_query_name='instruction',
+                            db_constraint=True)
+    
+    operation = JSONField(default=dict)
+    
+    sequence_no = models.IntegerField(null=False,blank=False,
+                                      default=0)
+    
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)    
+        
+    updated_at = models.DateTimeField(auto_now=True)       
+    
+    
+    
+    class Meta:
+        unique_together = ('run', 'sequence_no',)    
+    
+    def __str__(self):
+        return 'Instruction %s'%self.id
+
+@python_2_unicode_compatible
+class Data(models.Model):
+    
+    name = models.CharField(max_length=200,null=True)
+    
+    data_type = models.CharField(max_length=200,
+                                 choices=zip(DATA_TYPES,
+                                             DATA_TYPES),
+                                 null=False,
+                                 default='available',
+                                 blank=False)
+    
+    sequence_no = models.IntegerField(null=False,blank=False,
+                                      default=0)    
+    
+    #upload_to isn't used but is required
+    image = models.ImageField(upload_to='autolims.Data/bytes/filename/mimetype', null=True, blank=True)
+    
+    file = models.FileField(upload_to='autolims.Data/bytes/filename/mimetype', null=True, blank=True)
+    
+    json = JSONField(null=True,blank=True)
+    
+    instruction = models.ForeignKey(Instruction,
+                                    on_delete=models.CASCADE,
+                                    related_name='data',
+                                    related_query_name='data',
+                                    db_constraint=True)
+    
+    run = models.ForeignKey(Run, on_delete=models.CASCADE, 
+                            related_name='data', 
+                            related_query_name='data',
+                            db_constraint=True,
+                            null=True,
+                            blank=True
+                            )
+    
+    class Meta:
+        unique_together = ('run', 'sequence_no',)
+        
+    def save(self, *args, **kwargs):
+        if self.run and self.instruction and self.run_id != self.instruction.run_id:
+            raise Exception, "Instruction must belong to the run of this data object"
+        
+        super(Data, self).save(*args, **kwargs)
+        
+        delete_file_if_needed(self, 'file')
+        delete_file_if_needed(self, 'image')        
+        
+    def delete(self, *args, **kwargs):
+        super(Data, self).delete(*args, **kwargs)
+        delete_file(self, 'file')
+        delete_file(self, 'image')    
+        
+    
+    def __str__(self):
+        return "Data %s"%self.id
+
+@python_2_unicode_compatible
+class AliquotEffect(models.Model):
+    
+    affected_aliquot = models.ForeignKey(Aliquot,
+                                         on_delete=models.CASCADE,
+                                         related_name='aliquot_effects',
+                                         related_query_name='aliquot_effect',
+                                         db_constraint=True)
+    
+    
+    generating_instruction = models.ForeignKey(Instruction, on_delete=models.CASCADE, 
+                                              related_name='aliquot_effects', 
+                                              related_query_name='aliquot_effect', 
+                                              db_constraint=True)
+    
+    effect_data = JSONField(default=dict) 
+    
+    effect_type = models.CharField(max_length=200,
+                                   choices=zip(EFFECT_TYPES,
+                                               EFFECT_TYPES),
+                                   null=False,
+                                   default=EFFECT_TYPES[0],
+                                   blank=False)
+    
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)    
+    
+    updated_at = models.DateTimeField(auto_now=True)   
+    
+    
+    def __str__(self):
+        return 'Aliquot Effect %s'%self.id
     
     
 
