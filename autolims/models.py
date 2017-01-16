@@ -104,7 +104,7 @@ class Run(models.Model):
     
     flagged = models.BooleanField(default=False,null=False)
     
-    properties = JSONField(default=dict)  
+    properties = JSONField(blank=True,null=True)   
     
     autoprotocol = models.TextField(null=True,blank=True)
     
@@ -114,7 +114,9 @@ class Run(models.Model):
     
     refs = models.ManyToManyField('Sample', related_name='related_runs', 
                                  related_query_name='related_run',
-                                 db_constraint=True)
+                                 db_constraint=True,
+                                 null=True,
+                                 blank=True)
                                  
     
     
@@ -163,7 +165,7 @@ class Sample(models.Model):
     
     expires_at = models.DateTimeField(null=True, blank=True)
     
-    properties = JSONField(default=dict)
+    properties = JSONField(blank=True,null=True) 
     
     generated_by_run = models.ForeignKey(Run, on_delete=models.CASCADE, 
                                      related_name='generated_containers', 
@@ -220,7 +222,7 @@ class Aliquot(models.Model):
     
     volume_ul = models.CharField(max_length=200,null=False,default='0',blank=False)
   
-    properties = JSONField(default=dict)    
+    properties = JSONField(blank=True,null=True)    
     
     #resource
     #lot_no
@@ -247,7 +249,7 @@ class Instruction(models.Model):
                             related_query_name='instruction',
                             db_constraint=True)
     
-    operation = JSONField(default=dict)
+    operation = JSONField(blank=True,null=True) 
     
     sequence_no = models.IntegerField(null=False,blank=False,
                                       default=0)
@@ -267,6 +269,16 @@ class Instruction(models.Model):
     def __str__(self):
         return 'Instruction %s'%self.id
 
+class DataImage(models.Model):
+    bytes = models.TextField()
+    filename = models.CharField(max_length=255)
+    mimetype = models.CharField(max_length=50)
+    
+class DataFile(models.Model):
+    bytes = models.TextField()
+    filename = models.CharField(max_length=255)
+    mimetype = models.CharField(max_length=50)
+    
 @python_2_unicode_compatible
 class Data(models.Model):
     
@@ -283,9 +295,9 @@ class Data(models.Model):
                                       default=0)    
     
     #upload_to isn't used but is required
-    image = models.ImageField(upload_to='autolims.Data/bytes/filename/mimetype', null=True, blank=True)
+    image = models.ImageField(upload_to='autolims.DataImage/bytes/filename/mimetype', null=True, blank=True)
     
-    file = models.FileField(upload_to='autolims.Data/bytes/filename/mimetype', null=True, blank=True)
+    file = models.FileField(upload_to='autolims.DataFile/bytes/filename/mimetype', null=True, blank=True)
     
     json = JSONField(null=True,blank=True)
     
@@ -293,7 +305,9 @@ class Data(models.Model):
                                     on_delete=models.CASCADE,
                                     related_name='data',
                                     related_query_name='data',
-                                    db_constraint=True)
+                                    db_constraint=True,
+                                    null=True,
+                                    blank=True)
     
     run = models.ForeignKey(Run, on_delete=models.CASCADE, 
                             related_name='data', 
@@ -305,6 +319,7 @@ class Data(models.Model):
     
     class Meta:
         unique_together = ('run', 'sequence_no',)
+        verbose_name_plural = "data"
         
     def save(self, *args, **kwargs):
         if self.run and self.instruction and self.run_id != self.instruction.run_id:
@@ -339,7 +354,7 @@ class AliquotEffect(models.Model):
                                               related_query_name='aliquot_effect', 
                                               db_constraint=True)
     
-    effect_data = JSONField(default=dict) 
+    effect_data = JSONField(blank=True,null=True)  
     
     effect_type = models.CharField(max_length=200,
                                    choices=zip(EFFECT_TYPES,
