@@ -13,8 +13,7 @@ def forwards_func(apps, schema_editor):
     Organization = apps.get_model("autolims", "Organization")
     db_alias = schema_editor.connection.alias
     Organization.objects.using(db_alias).bulk_create([
-        Organization(name="Default Organization", subdomain='default',
-                     id=1)
+        Organization(name="Default Organization", subdomain='default')
     ])
 
 def reverse_func(apps, schema_editor):

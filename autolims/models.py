@@ -25,12 +25,14 @@ DEFAULT_ORGANIZATION = 1
 
 @python_2_unicode_compatible
 class Organization(models.Model):
-    name = models.CharField(max_length=200,blank=True)
-    subdomain = models.CharField(max_length=200,blank=True)
+    name = models.CharField(max_length=200,blank=True,
+                            default='')
+    subdomain = models.CharField(max_length=200,blank=True,
+                                 default='')
     
     users = models.ManyToManyField(User)
     
-    deleted_at = models.DateTimeField(blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)    
 
     #custom fields
@@ -95,6 +97,8 @@ class Run(models.Model):
     flagged = models.BooleanField(default=False,null=False)
     
     properties = JSONField(default=dict)  
+    
+    autoprotocol = models.TextField(null=True,blank=True)
     
     #we don't know what issued means
 
