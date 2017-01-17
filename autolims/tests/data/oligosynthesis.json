@@ -1,0 +1,106 @@
+{
+    "refs": {
+        "pGPS2 pcr primer rev": {
+            "new": "micro-1.5",
+            "store": {
+                "where": "cold_20"
+            }
+        },
+        "pGPS2 pcr primer fwd": {
+            "new": "micro-1.5",
+            "store": {
+                "where": "cold_20"
+            }
+        }
+    },
+    "outs": {
+        "pGPS2 pcr primer rev": {
+            "0": {
+                "name": "pGPS2 pcr primer rev",
+                "properties": {
+                    "Concentration": "100uM",
+                    "Scale": "25nm",
+                    "Sequence": "CCAGCTCGTTGAGTTTCTCC"
+                }
+            }
+        },
+        "pGPS2 pcr primer fwd": {
+            "0": {
+                "name": "pGPS2 pcr primer fwd",
+                "properties": {
+                    "Concentration": "100uM",
+                    "Scale": "25nm",
+                    "Sequence": "GGGCACCAATAACTGCCTTA"
+                }
+            }
+        }
+    },
+    "price": [{
+            "price_each": 0.22,
+            "description": "Total Base Pairs",
+            "quantity": 40
+        },
+        {
+            "price_each": 0.25,
+            "description": "Oligo Resuspension",
+            "quantity": 2
+        }
+    ],
+    "instructions": [{
+            "oligos": [{
+                    "destination": "pGPS2 pcr primer fwd/0",
+                    "scale": "25nm",
+                    "purification": "standard",
+                    "sequence": "GGGCACCAATAACTGCCTTA"
+                },
+                {
+                    "destination": "pGPS2 pcr primer rev/0",
+                    "scale": "25nm",
+                    "purification": "standard",
+                    "sequence": "CCAGCTCGTTGAGTTTCTCC"
+                }
+            ],
+            "op": "oligosynthesize"
+        },
+        {
+            "acceleration": "2000:g",
+            "duration": "30.0:second",
+            "object": "pGPS2 pcr primer fwd",
+            "op": "spin"
+        },
+        {
+            "acceleration": "2000:g",
+            "duration": "30.0:second",
+            "object": "pGPS2 pcr primer rev",
+            "op": "spin"
+        },
+        {
+            "to": [{
+                "volume": "250.0:microliter",
+                "well": "pGPS2 pcr primer fwd/0"
+            }],
+            "op": "provision",
+            "resource_id": "rs17pwyc754v9t"
+        },
+        {
+            "to": [{
+                "volume": "250.0:microliter",
+                "well": "pGPS2 pcr primer rev/0"
+            }],
+            "op": "provision",
+            "resource_id": "rs17pwyc754v9t"
+        },
+        {
+            "acceleration": "2000:g",
+            "duration": "30.0:second",
+            "object": "pGPS2 pcr primer fwd",
+            "op": "spin"
+        },
+        {
+            "acceleration": "2000:g",
+            "duration": "30.0:second",
+            "object": "pGPS2 pcr primer rev",
+            "op": "spin"
+        }
+    ]
+}

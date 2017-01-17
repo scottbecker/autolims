@@ -1,0 +1,42 @@
+#!wing
+#!version=5.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+debug.launch-configs = (1,
+                        {'launch-uEyrOyU4OvN768uR': ({},
+        {'buildcmd': ('project',
+                      ('',
+                       '')),
+         'env': ('project',
+                 []),
+         'name': u'Launch manage.py',
+         'pyexec': ('project',
+                    ''),
+         'pypath': ('project',
+                    ''),
+         'pyrunargs': ('project',
+                       '-u'),
+         'runargs': 'runserver 8000',
+         'rundir': ('project',
+                    '')})})
+proj.debug-sub-processes = True
+proj.directory-list = [{'dirloc': loc('.'),
+                        'excludes': (),
+                        'filter': '*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True}]
+proj.file-type = 'shared'
+proj.launch-config = {loc('autolims/tests.py'): ('project',
+        (u'',
+         'launch-uEyrOyU4OvN768uR')),
+                      loc('manage.py'): ('custom',
+        (u'',
+         'launch-uEyrOyU4OvN768uR'))}
+proj.main-file = loc('manage.py')
+testing.auto-test-file-specs = (('glob',
+                                 'test*.py'),)
+testing.test-framework = {None: ':internal djangotest',
+                          loc('manage.py'): ':internal djangotest'}

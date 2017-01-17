@@ -22,7 +22,7 @@ from .utils import (ul, get_well_dead_volume,
                                       convert_mass_to_volume, ug, round_volume,
                                       calculate_dilution_volume, mM, uM, copy_cell_line_name, copy_well_names,
                                       convert_string_to_unit, get_diluent_volume)
-from ..lib import lists_intersect, get_dict_optional_value, get_melting_temp
+from lib import lists_intersect, get_dict_optional_value, get_melting_temp
 from .enums import Reagent, Antibiotic, Temperature
 from instruction import MiniPrep
 from Bio.SeqUtils import GC
@@ -34,6 +34,8 @@ from autoprotocol.util import make_gel_extract_params, make_band_param
 MAX_PIPETTE_TIP_VOLUME = ul(900)
 MAX_STAMP_TIP_VOLUME = ul(148)
 
+DEFAULT_TRASH_PLATE_SIZE = '24-deep'
+
 class CustomProtocol(Protocol):
    
     def __init__(self,parent_protocol=None,
@@ -41,6 +43,8 @@ class CustomProtocol(Protocol):
         #catalog inventory
         self.transcriptic_inv = get_transcriptic_inventory()
         
+        
+        self.trash_plate_size = DEFAULT_TRASH_PLATE_SIZE
         
         #default to test mode (users need to change this after creating the protocol before using it)
         self.set_test_mode(True)
@@ -107,12 +111,12 @@ class CustomProtocol(Protocol):
         #if the trash tube is full, transfer to itself and use max disposal volume
         
         if not self._trash_plate:
-            self._trash_plate = self.ref("trash_plate", cont_type="24-deep", discard=True) 
+            self._trash_plate = self.ref("trash_plate", cont_type=self.trash_plate_size, discard=True) 
 
         if space_available(self._trash_plate) < volume_to_trash:
             self._trash_count+=1
             self._trash_plate = self.ref("trash_plate_%s"%self._trash_count,
-                                         cont_type="24-deep", discard=True)   
+                                         cont_type=self.trash_plate_size, discard=True)   
 
     def transfer_from_well_to_plate(self, src_well, plate, volume, one_tip=False,
                                     first_well_index=0,

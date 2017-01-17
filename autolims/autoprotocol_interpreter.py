@@ -8,5 +8,9 @@ def execute_run(run):
     
     Ensures that test runs can't access real inventory (and visa versa)
     
+    update properties and names of containers/wells (see outs of autoprotocol)
+    
+    Mark Samples as discarded as needed
+    
     """
     pass

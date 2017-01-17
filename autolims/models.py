@@ -7,6 +7,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from transcriptic_tools import utils
 from transcriptic_tools.utils import _CONTAINER_TYPES
 from transcriptic_tools.enums import Temperature, CustomEnum
+from django.core.exceptions import PermissionDenied
 
 from db_file_storage.model_utils import delete_file, delete_file_if_needed
 
@@ -19,10 +20,10 @@ for container_type in _CONTAINER_TYPES.values():
     
 COVER_TYPES = list(COVER_TYPES)
 
-SAMPLE_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound']
+SAMPLE_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound','pending_destroy']
 TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 
-RUN_STATUS_CHOICES = ['complete','accepted','in-progress','aborted','canceled']
+RUN_STATUS_CHOICES = ['complete','accepted','in_progress','aborted','canceled']
 
 
 EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instruction']
@@ -118,7 +119,59 @@ class Run(models.Model):
                                  null=True,
                                  blank=True)
                                  
+                                 
+    def save(self, *args, **kw):
+        
+        new_run = False
+        
+        if self.id is not None:
+            orig_run = Run.objects.get(id=self.id)
+            if orig_run.autoprotocol != self.autoprotocol:
+                raise Exception, "unable to edit autoprotocol on a run"
+        #new run
+        else:
+            new_run = True
+            
+        super(Run, self).save(*args, **kw)    
+        
+        if new_run:
+            self.create_instructions()
+            self.populate_refs()            
     
+    def create_instructions(self):
+        for i, instruction_dict in enumerate(self.autoprotocol['instructions']):
+            instruction = Instruction.objects.create(run = self,
+                                                     operation = instruction_dict,
+                                                     sequence_no = i)
+    
+    def populate_refs(self):
+        
+        organization = self.project.organization
+        
+        for label, ref_dict in self.autoprotocol['refs'].items():
+            if 'new' in ref_dict:
+                
+                storage_condition = ref_dict['store']['where'] if 'store' in ref_dict else None
+                
+                new_container = Sample.objects.create(container_type_id = ref_dict['new'],
+                                                      label = label,
+                                                      test_mode = self.test_mode,
+                                                      storage_condition = storage_condition,
+                                                      status = 'available',
+                                                      generated_by_run = self,
+                                                      organization = organization
+                                                      )
+                self.refs.add(new_container)
+            else:
+                
+                #check that the existing sample belongs to this org
+                
+                existing_container = Sample.objects.get(id=ref_dict['id'])
+                
+                if existing_container.organization_id != self.project.organization_id:
+                    raise PermissionDenied('Container %s doesn\'t belong to your org'%existing_container.id)
+                
+                self.refs.add(existing_container)
     
     def __str__(self):
         return self.title     
@@ -148,13 +201,17 @@ class Sample(models.Model):
     
     label = models.CharField(max_length=1000,
                              blank=True,
-                             default='')
+                             default='',
+                             db_index=True
+                             )
     
     #location_id
     
     storage_condition = models.CharField(max_length=200,
                                          choices=zip(TEMPERATURE_NAMES,TEMPERATURE_NAMES),
-                                         default=Temperature.ambient.name)
+                                         default=Temperature.ambient.name,
+                                         null=True,
+                                         blank=True)
     
     status = models.CharField(max_length=200,
                               choices=zip(SAMPLE_STATUS_CHOICES,
@@ -199,7 +256,11 @@ class Sample(models.Model):
             self.expires_at = None
             
         if self.generated_by_run == '':
-            self.generated_by_run = None            
+            self.generated_by_run = None      
+            
+        if self.generated_by_run_id:
+            #check that the project of the generated run and the current org are the same
+            assert self.generated_by_run.project.organization_id == self.organization_id, "Can't use a sample from one org in another org's run"
         
         super(Sample, self).save(*args, **kwargs)
     

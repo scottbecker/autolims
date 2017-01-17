@@ -1,0 +1,1971 @@
+{
+    "refs": {
+        "growth_plate": {
+            "new": "96-deep",
+            "store": {
+                "where": "cold_80"
+            }
+        },
+        "trash_plate": {
+            "new": "96-deep",
+            "discard": true
+        },
+        "bacteria_tube": {
+            "discard": true,
+            "id": "ct19sm6xadv3d9"
+        },
+        "absorbance_plate": {
+            "new": "96-flat",
+            "discard": true
+        }
+    },
+    "outs": {
+        "growth_plate": {
+            "0": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "1": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "2": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "3": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "12": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "13": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "14": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "15": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "24": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "25": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "26": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "27": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "36": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "37": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "38": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "39": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "48": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "49": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "50": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "51": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "60": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "61": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "62": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "63": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "72": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "73": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "74": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "75": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "84": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "85": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "86": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            },
+            "87": {
+                "properties": {
+                    "freeze_thaw_cycles": "0"
+                }
+            }
+        },
+        "bacteria_tube": {
+            "0": {
+                "name": "cryo_frozen_hsv1_strain_f_cells_2",
+                "properties": {
+                    "Resource": "Glycerol 40%",
+                    "cell_line_name": "hsv1_strain_f",
+                    "antibiotic": "cam"
+                }
+            }
+        },
+        "absorbance_plate": {
+            "0": {
+                "name": "growth_plate_A1_absorbance_0"
+            },
+            "12": {
+                "name": "growth_plate_A2_absorbance_0"
+            },
+            "24": {
+                "name": "growth_plate_A3_absorbance_0"
+            },
+            "36": {
+                "name": "growth_plate_A4_absorbance_0"
+            },
+            "95": {
+                "name": "empty_blanking_well"
+            }
+        }
+    },
+    "time_constraints": [],
+    "instructions": [{
+            "resource_id": "rs17bafcbmyrmh",
+            "object": "growth_plate",
+            "columns": [{
+                    "column": 0,
+                    "volume": "1000.0:microliter"
+                },
+                {
+                    "column": 1,
+                    "volume": "1000.0:microliter"
+                },
+                {
+                    "column": 2,
+                    "volume": "1000.0:microliter"
+                },
+                {
+                    "column": 3,
+                    "volume": "1000.0:microliter"
+                }
+            ],
+            "op": "dispense"
+        },
+        {
+            "to": [{
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/0"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/12"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/24"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/36"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/48"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/60"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/72"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/84"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/1"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/13"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/25"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/37"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/49"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/61"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/73"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/85"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/2"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/14"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/26"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/38"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/50"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/62"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/74"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/86"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/3"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/15"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/27"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/39"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/51"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/63"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/75"
+                },
+                {
+                    "volume": "0.4:microliter",
+                    "well": "growth_plate/87"
+                }
+            ],
+            "resource_id": "rs17p6t8ty2ny4",
+            "op": "provision"
+        },
+        {
+            "groups": [{
+                    "mix": [{
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/0"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/12"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/24"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/36"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/48"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/60"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/72"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/84"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/1"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/13"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/25"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/37"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/49"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/61"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/73"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/85"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/2"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/14"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/26"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/38"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/50"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/62"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/74"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/86"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/3"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/15"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/27"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/39"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/51"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/63"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/75"
+                        },
+                        {
+                            "volume": "500.2:microliter",
+                            "speed": "500.0:microliter/second",
+                            "repetitions": 5,
+                            "well": "growth_plate/87"
+                        }
+                    ]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/0",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/12",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/24",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/36",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/48",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/60",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/72",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/84",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/1",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/13",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/25",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/37",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/49",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/61",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/73",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/85",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/2",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/14",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/26",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/38",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/50",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/62",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/74",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/86",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/3",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/15",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/27",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/39",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/51",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/63",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/75",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                },
+                {
+                    "transfer": [{
+                        "volume": "2.34:microliter",
+                        "to": "growth_plate/87",
+                        "from": "bacteria_tube/0",
+                        "mix_after": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }]
+                }
+            ],
+            "op": "pipette"
+        },
+        {
+            "lid": "standard",
+            "object": "growth_plate",
+            "op": "cover"
+        },
+        {
+            "where": "warm_37",
+            "object": "growth_plate",
+            "co2_percent": 0,
+            "duration": "24:hour",
+            "shaking": true,
+            "op": "incubate"
+        },
+        {
+            "object": "growth_plate",
+            "op": "uncover"
+        },
+        {
+            "groups": [{
+                "transfer": [{
+                        "volume": "100.0:microliter",
+                        "to": "absorbance_plate/0",
+                        "from": "growth_plate/0",
+                        "mix_before": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    },
+                    {
+                        "volume": "100.0:microliter",
+                        "to": "absorbance_plate/12",
+                        "from": "growth_plate/1",
+                        "mix_before": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    },
+                    {
+                        "volume": "100.0:microliter",
+                        "to": "absorbance_plate/24",
+                        "from": "growth_plate/2",
+                        "mix_before": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    },
+                    {
+                        "volume": "100.0:microliter",
+                        "to": "absorbance_plate/36",
+                        "from": "growth_plate/3",
+                        "mix_before": {
+                            "volume": "501.37:microliter",
+                            "repetitions": 5,
+                            "speed": "501.0:microliter/second"
+                        }
+                    }
+                ]
+            }],
+            "op": "pipette"
+        },
+        {
+            "dataref": "cell_density_600nm_absorbance_0",
+            "object": "absorbance_plate",
+            "wells": [
+                "A1",
+                "B1",
+                "C1",
+                "D1",
+                "H12"
+            ],
+            "num_flashes": 25,
+            "wavelength": "600:nanometer",
+            "op": "absorbance"
+        },
+        {
+            "lid": "standard",
+            "object": "growth_plate",
+            "op": "cover"
+        },
+        {
+            "acceleration": "4000:g",
+            "duration": "5.0:minute",
+            "object": "growth_plate",
+            "op": "spin"
+        },
+        {
+            "object": "growth_plate",
+            "op": "uncover"
+        },
+        {
+            "groups": [{
+                "transfer": [{
+                        "volume": "887.74:microliter",
+                        "to": "trash_plate/0",
+                        "from": "growth_plate/0",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "887.74:microliter",
+                        "to": "trash_plate/0",
+                        "from": "growth_plate/1",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "224.52:microliter",
+                        "to": "trash_plate/0",
+                        "from": "growth_plate/2",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "663.22:microliter",
+                        "to": "trash_plate/1",
+                        "from": "growth_plate/2",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "887.74:microliter",
+                        "to": "trash_plate/1",
+                        "from": "growth_plate/3",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "449.04:microliter",
+                        "to": "trash_plate/1",
+                        "from": "growth_plate/12",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "538.7:microliter",
+                        "to": "trash_plate/2",
+                        "from": "growth_plate/12",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/2",
+                        "from": "growth_plate/13",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/2",
+                        "from": "growth_plate/13",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "473.56:microliter",
+                        "to": "trash_plate/2",
+                        "from": "growth_plate/14",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "514.18:microliter",
+                        "to": "trash_plate/3",
+                        "from": "growth_plate/14",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/3",
+                        "from": "growth_plate/15",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/3",
+                        "from": "growth_plate/15",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "498.08:microliter",
+                        "to": "trash_plate/3",
+                        "from": "growth_plate/24",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "489.66:microliter",
+                        "to": "trash_plate/4",
+                        "from": "growth_plate/24",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/4",
+                        "from": "growth_plate/25",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/4",
+                        "from": "growth_plate/25",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "522.6:microliter",
+                        "to": "trash_plate/4",
+                        "from": "growth_plate/26",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "465.14:microliter",
+                        "to": "trash_plate/5",
+                        "from": "growth_plate/26",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/5",
+                        "from": "growth_plate/27",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/5",
+                        "from": "growth_plate/27",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "547.12:microliter",
+                        "to": "trash_plate/5",
+                        "from": "growth_plate/36",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "440.62:microliter",
+                        "to": "trash_plate/6",
+                        "from": "growth_plate/36",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/6",
+                        "from": "growth_plate/37",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/6",
+                        "from": "growth_plate/37",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "571.64:microliter",
+                        "to": "trash_plate/6",
+                        "from": "growth_plate/38",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "416.1:microliter",
+                        "to": "trash_plate/7",
+                        "from": "growth_plate/38",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/7",
+                        "from": "growth_plate/39",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/7",
+                        "from": "growth_plate/39",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "596.16:microliter",
+                        "to": "trash_plate/7",
+                        "from": "growth_plate/48",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "391.58:microliter",
+                        "to": "trash_plate/8",
+                        "from": "growth_plate/48",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/8",
+                        "from": "growth_plate/49",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/8",
+                        "from": "growth_plate/49",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "620.68:microliter",
+                        "to": "trash_plate/8",
+                        "from": "growth_plate/50",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "367.06:microliter",
+                        "to": "trash_plate/9",
+                        "from": "growth_plate/50",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/9",
+                        "from": "growth_plate/51",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/9",
+                        "from": "growth_plate/51",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "645.2:microliter",
+                        "to": "trash_plate/9",
+                        "from": "growth_plate/60",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "342.54:microliter",
+                        "to": "trash_plate/10",
+                        "from": "growth_plate/60",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/10",
+                        "from": "growth_plate/61",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/10",
+                        "from": "growth_plate/61",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "669.72:microliter",
+                        "to": "trash_plate/10",
+                        "from": "growth_plate/62",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "318.02:microliter",
+                        "to": "trash_plate/11",
+                        "from": "growth_plate/62",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/11",
+                        "from": "growth_plate/63",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/11",
+                        "from": "growth_plate/63",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "694.24:microliter",
+                        "to": "trash_plate/11",
+                        "from": "growth_plate/72",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "293.5:microliter",
+                        "to": "trash_plate/12",
+                        "from": "growth_plate/72",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/12",
+                        "from": "growth_plate/73",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/12",
+                        "from": "growth_plate/73",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "718.76:microliter",
+                        "to": "trash_plate/12",
+                        "from": "growth_plate/74",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "268.98:microliter",
+                        "to": "trash_plate/13",
+                        "from": "growth_plate/74",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/13",
+                        "from": "growth_plate/75",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/13",
+                        "from": "growth_plate/75",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "743.28:microliter",
+                        "to": "trash_plate/13",
+                        "from": "growth_plate/84",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "244.46:microliter",
+                        "to": "trash_plate/14",
+                        "from": "growth_plate/84",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/14",
+                        "from": "growth_plate/85",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/14",
+                        "from": "growth_plate/85",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "767.8:microliter",
+                        "to": "trash_plate/14",
+                        "from": "growth_plate/86",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "219.94:microliter",
+                        "to": "trash_plate/15",
+                        "from": "growth_plate/86",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "900.0:microliter",
+                        "to": "trash_plate/15",
+                        "from": "growth_plate/87",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    },
+                    {
+                        "volume": "87.74:microliter",
+                        "to": "trash_plate/15",
+                        "from": "growth_plate/87",
+                        "x_dispense_target": {
+                            "depth": {
+                                "distance": "0.001:meter",
+                                "method": "ll_top"
+                            },
+                            "dispense_speed": {
+                                "start": "900:microliter/second",
+                                "max": "900:microliter/second"
+                            }
+                        }
+                    }
+                ]
+            }],
+            "op": "pipette"
+        },
+        {
+            "lid": "standard",
+            "object": "growth_plate",
+            "op": "cover"
+        }
+    ]
+}
