@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['scott-vm','*','10.0.2.15']
 
 INSTALLED_APPS = [
     'autolims.apps.AutolimsConfig',
-    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
