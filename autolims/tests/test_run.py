@@ -40,7 +40,7 @@ class RunTestCase(TestCase):
             
         #check that instructions have been created and they aren't executed
         
-        self.assertEqual(run.instructions.count(),7)
+        self.assertEqual(run.instructions.count(),6)
         
         self.assertEqual(run.containers.count(),2)
         

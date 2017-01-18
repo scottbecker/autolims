@@ -41,18 +41,28 @@ experiment_name = ''
 
 # Transcriptic authorization
 
+CONFIG_INITIALIZED = False
+TSC_HEADERS = None
+ORG_NAME = None
 
-if "--test" in sys.argv:
-    auth_file = '../test_mode_auth.json'
-else:
-    auth_file = '../auth.json'
-
-auth_file_path = os.path.join(os.path.dirname(__file__), auth_file)
-
-auth_config = json.load(open(auth_file_path))
-TSC_HEADERS = {k:v for k,v in auth_config.items() if k in ["X_User_Email","X_User_Token"]}
-
-ORG_NAME = auth_config['org_name']
+def initialize_config():
+    global TSC_HEADERS, CONFIG_INITIALIZED, ORG_NAME
+    
+    if CONFIG_INITIALIZED: return
+    
+    if "--test" in sys.argv:
+        auth_file = '../test_mode_auth.json'
+    else:
+        auth_file = '../auth.json'
+    
+    auth_file_path = os.path.join(os.path.dirname(__file__), auth_file)
+    
+    auth_config = json.load(open(auth_file_path))
+    TSC_HEADERS = {k:v for k,v in auth_config.items() if k in ["X_User_Email","X_User_Token"]}
+    
+    ORG_NAME = auth_config['org_name']
+    
+    CONFIG_INITIALIZED = True
 
 # Correction to Transcriptic-specific dead volumes
 _CONTAINER_TYPES['96-deep-kf'] = _CONTAINER_TYPES['96-deep-kf']._replace(cover_types = ["standard"])
@@ -132,7 +142,12 @@ def get_cell_line_name(wellorcontainer):
     
     return wells[0].properties['cell_line_name']
 
-def init_inventory_container(container,headers=TSC_HEADERS, org_name=ORG_NAME):
+def init_inventory_container(container,headers=None, org_name=None):
+    
+    initialize_config()
+    
+    headers = headers if headers else TSC_HEADERS
+    org_name = org_name if org_name else ORG_NAME
     
     def _container_url(container_id):
             return 'https://secure.transcriptic.com/{}/samples/{}.json'.format(org_name, container_id)
@@ -142,8 +157,6 @@ def init_inventory_container(container,headers=TSC_HEADERS, org_name=ORG_NAME):
 
     container_json = response.json()   
     
-    ##print(response)
-    
     container.cover = container_json['cover']
     
     for well in container.all_wells():
@@ -151,8 +164,13 @@ def init_inventory_container(container,headers=TSC_HEADERS, org_name=ORG_NAME):
     
    
 #@TODO: this needs to be mocked in tests since it hits the transcriptic api
-def init_inventory_well(well, headers=TSC_HEADERS, org_name=ORG_NAME,container_json=None):
+def init_inventory_well(well, headers=None, org_name=None,container_json=None):
     """Initialize well (set volume etc) for Transcriptic"""
+    
+    initialize_config()
+        
+    headers = headers if headers else TSC_HEADERS
+    org_name = org_name if org_name else ORG_NAME    
     
     def _container_url(container_id):
         return 'https://secure.transcriptic.com/{}/samples/{}.json'.format(org_name, container_id)
@@ -194,8 +212,13 @@ def init_inventory_well(well, headers=TSC_HEADERS, org_name=ORG_NAME,container_j
     return True
 
 
-def put_well_data(container_id, well_index, data_obj, headers=TSC_HEADERS, org_name=ORG_NAME,container_json=None):
+def put_well_data(container_id, well_index, data_obj, headers=None, org_name=None,container_json=None):
     """Update a well with new data"""
+    
+    initialize_config()
+        
+    headers = headers if headers else TSC_HEADERS
+    org_name = org_name if org_name else ORG_NAME    
     
     def _well_url(container_id, well_index):
         return 'https://secure.transcriptic.com/{}/inventory/samples/{}/{}'.format(org_name, container_id, well_index)

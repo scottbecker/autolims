@@ -74,12 +74,7 @@
             "to": [{
                 "volume": "250.0:microliter",
                 "well": "pGPS2 pcr primer fwd/0"
-            }],
-            "op": "provision",
-            "resource_id": "rs17pwyc754v9t"
-        },
-        {
-            "to": [{
+            },{
                 "volume": "250.0:microliter",
                 "well": "pGPS2 pcr primer rev/0"
             }],

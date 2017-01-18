@@ -74,6 +74,7 @@ def run(fn, protocol_name=None, seal_after_run=True,
     #----- This block is custom to dtx -----
     
     protocol.set_test_mode(params.get("test_mode",True))
+    #protocol.init_all_refs()
     
     #----- End of New Block ------
 

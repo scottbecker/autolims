@@ -8,7 +8,8 @@ from transcriptic_tools import utils
 from transcriptic_tools.utils import _CONTAINER_TYPES
 from transcriptic_tools.enums import Temperature, CustomEnum
 from django.core.exceptions import PermissionDenied
-
+from autoprotocol import Unit
+from transcriptic_tools.utils import round_volume
 from db_file_storage.model_utils import delete_file, delete_file_if_needed
 
 
@@ -26,7 +27,7 @@ TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 RUN_STATUS_CHOICES = ['complete','accepted','in_progress','aborted','canceled']
 
 
-ALIQUOT_EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instruction']
+ALIQUOT_EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instructions']
 
 DATA_TYPES = ['image_plate','platereader','measure']
 
@@ -78,13 +79,17 @@ class Project(models.Model):
         return self.name if self.name else 'Project %s'%self.id    
    
    
-class RunContainers(models.Model):
+class RunContainer(models.Model):
     run = models.ForeignKey('Run', on_delete=models.CASCADE,
-                            db_constraint=True
+                            db_constraint=True,
+                            related_name='run_containers', 
+                            related_query_name='run_container',                            
                             )
     
     container = models.ForeignKey('Container', on_delete=models.CASCADE,
-                               db_constraint=True
+                               db_constraint=True,
+                               related_name='run_containers', 
+                               related_query_name='run_container',                                   
                             )    
     
     #the local label of the container within the run
@@ -128,7 +133,7 @@ class Run(models.Model):
     properties = JSONField(null=True,blank=True,
                            default=dict)   
     
-    autoprotocol = models.TextField(null=True,blank=True)
+    autoprotocol = JSONField(null=True,blank=True) 
     
     #we don't know what issued means
 
@@ -136,7 +141,7 @@ class Run(models.Model):
     
     containers = models.ManyToManyField('Container', related_name='runs', 
                                  related_query_name='run',
-                                 through='RunContainers',
+                                 through='RunContainer',
                                  db_constraint=True,
                                  null=True,
                                  blank=True)
@@ -145,22 +150,22 @@ class Run(models.Model):
         
         if isinstance(container_or_container_id,Container):
         
-            RunContainers.objects.create(run=self,
+            RunContainer.objects.create(run=self,
                                       container=container_or_container_id,
                                       container_label = label
                                       ) 
         else:
-            RunContainers.objects.create(run=self,
+            RunContainer.objects.create(run=self,
                                       container_id=container_or_container_id,
                                       container_label = label
                                       )       
             
     def remove_container(self,container_or_container_id):
         if isinstance(container_or_container_id, Container):
-            RunContainers.objects.filter(run=self,
+            RunContainer.objects.filter(run=self,
                                       container=container_or_container_id).delete()
         else:
-            RunContainers.objects.filter(run=self,
+            RunContainer.objects.filter(run=self,
                                       container_id=container_or_container_id).delete()            
         
         
@@ -349,7 +354,25 @@ class Aliquot(models.Model):
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)    
     
-    def save(self,*args, **kw):
+    def add_volume(self, volume_to_add):
+        """
+        Handles volume strings, e.g. '5:nanoliter'
+        """
+        
+        current_volume = Unit(self.volume_ul,'microliter')
+        
+        if isinstance(volume_to_add,basestring) and ':' in volume_to_add:
+            added_volume = Unit(volume_to_add)
+        else:
+            added_volume = Unit(volume_to_add,'microliter')
+            
+        #instruments have at most 0.00uL precision
+        new_volume = round_volume(current_volume+added_volume,2)
+            
+        self.volume_ul = str(new_volume.to('microliter').magnitude)
+            
+    
+    def save(self,*args, **kwargs):
         if not isinstance(self.properties,dict):
             self.properties = {}        
         
@@ -357,7 +380,7 @@ class Aliquot(models.Model):
         
     
     def __str__(self):
-        return '%s/%s'%self.container.label,self.well_idx
+        return '%s/%s'%(self.container.label,self.well_idx)
     
     
     
@@ -463,6 +486,7 @@ class Data(models.Model):
 
 @python_2_unicode_compatible
 class AliquotEffect(models.Model):
+    #visible in network console as aliquot_effects when loading a well at transcriptic
     
     aliquot = models.ForeignKey(Aliquot,
                                 on_delete=models.CASCADE,
@@ -522,7 +546,8 @@ class Resource(models.Model):
     
 
     transcriptic_id = models.CharField(max_length=200,blank=True,null=True,
-                                       default='')
+                                       default='', db_index=True,
+                                       unique=True)
 
     deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)    
@@ -533,6 +558,9 @@ class Resource(models.Model):
         return self.name if self.name else 'Resource %s'%self.id
     
     def save(self, *args, **kwargs):
+        
+        if self.transcriptic_id == '':
+            self.transcriptic_id = None
     
         if not isinstance(self.sensitivities,list):
             self.sensitivities = []           

@@ -47,11 +47,11 @@ class AutoprotocolInterpreterTestCase(TestCase):
         execute_run(run)
         
         #two Containers should have been made
-        self.assertEqual(run.refs.count(),2)
+        self.assertEqual(run.containers.count(),2)
         
-        #check that aliquots have been made and the volumes have been updated for those refs
+        #check that aliquots have been made and the volumes have been updated for those containers
         
-        for container in run.refs.all():
+        for container in run.containers.all():
             assert isinstance(container,Container)
             aliquot = container.aliquots.first() # type: Aliquot
             assert isinstance(aliquot, Aliquot)
@@ -60,25 +60,25 @@ class AutoprotocolInterpreterTestCase(TestCase):
             
             #ensure that properties are updated on wells
             
-            self.assertDictEqual({
+            self.assertDictContainsSubset({
                 #created by the oligosynthesis command
-                'Sequence':'CCAGCTCGTTGAGTTTCTCC',
+                'sequence':'CCAGCTCGTTGAGTTTCTCC',
                 #this really should be 25:nm but autoprotocol has it wrong and its a hassle to change
                 'scale':'25nm',
                 #created by the out
                 'Concentration': '100uM',
                 },
-                                 aliquot.properties
+                                        aliquot.properties
                                  )
             
         
-            #check that there are valid aliquot effects (aka well history on those refs)
+            #check that there are valid aliquot effects (aka well history on those containers)
             self.assertEqual(aliquot.aliquot_effects.count(),2)
             
-            ordered_well_history = aliquot.aliquot_effects.all().order_by('-id')
+            ordered_well_history = aliquot.aliquot_effects.all().order_by('id')
             
             
-            ordered_instructions = [aliquot_effect.generating_instruction \
+            ordered_instructions = [aliquot_effect.instruction \
                                   for aliquot_effect in ordered_well_history]
             
             self.assertListEqual([instruction.operation['op'] \
@@ -87,7 +87,7 @@ class AutoprotocolInterpreterTestCase(TestCase):
             
             self.assertListEqual([instruction.sequence_no \
                                   for instruction in ordered_instructions],
-                                 [0,1])            
+                                 [0,3])            
             
             #check that the instructions are marked executed
             self.assertTrue(all([instruction.completed_at for instruction in ordered_instructions]))

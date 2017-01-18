@@ -2,7 +2,7 @@ from .enums import Reagent, Temperature
 
 
 
-def get_transcriptic_inventory():
+def get_transcriptic_inventory(include_lowercase=True):
     inventory = {
         Reagent.dmem_fbs_ps: 'rs197gzgq2fufr',
         Reagent.mem: 'rs196bbjnnayuk',
@@ -75,7 +75,8 @@ def get_transcriptic_inventory():
 
     for key in reagent_keys:
         inventory[key.name] = inventory[key]
-        inventory[key.name.lower()] = inventory[key]    
+        if include_lowercase:
+            inventory[key.name.lower()] = inventory[key]    
         
     return inventory
 

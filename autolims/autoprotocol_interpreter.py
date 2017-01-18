@@ -1,12 +1,12 @@
 from django.db import transaction
 from datetime import datetime
 from autolims.models import (Instruction, Aliquot,Container,
-                             AliquotEffect)
+                             AliquotEffect, Resource)
 
 from transcriptic_tools.inventory import get_transcriptic_inventory
 from transcriptic_tools.enums import Reagent
 
-def get_or_create_aliquot_from_path(run, aliquot_path):
+def get_or_create_aliquot_from_path(run_id, aliquot_path):
     """
 
     aliquot address is of the format "container label / index"
@@ -15,10 +15,10 @@ def get_or_create_aliquot_from_path(run, aliquot_path):
     
     container_label, well_idx_str = aliquot_path.split('/')
     
-    well_idx = int(well_index_str)
+    well_idx = int(well_idx_str)
     
-    container = Container.objects.filter(runs__run_id=instruction.run_id,
-                                         runs__container_label=container_label).first()
+    container = Container.objects.get(run_container__run_id = run_id,
+                                      run_container__container_label = container_label)
     
     assert isinstance(container,Container)
     
@@ -36,12 +36,12 @@ def get_or_create_aliquot_from_path(run, aliquot_path):
 
 # ------ Instruction Executers --------
 
-def execute_oligosynthesis(instruction):
+def execute_oligosynthesize(instruction):
     operation = instruction.operation
     
     for oligo_info in operation['oligos']:
         
-        aliquot = get_or_create_aliquot_from_path(instruction.run, oligo_info['destination'])
+        aliquot = get_or_create_aliquot_from_path(instruction.run_id, oligo_info['destination'])
         aliquot.properties.update({'sequence':oligo_info['sequence'],
                                    'scale':oligo_info['scale'],
                                    'purification':oligo_info['purification']
@@ -83,25 +83,28 @@ def execute_uncover(instruction):
 def execute_provision(instruction):
     operation = instruction.operation
     
-    resource_name = operation['resource_id']
+    resource_id = operation['resource_id']
     
-    for oligo_info in operation['oligos']:
+    #strings are transcriptic id's
+    if isinstance(resource_id,basestring):
+        resource = Resource.objects.get(transcriptic_id=resource_id)
+    else:
+        resource = Resource.objects.get(id=resource_id)
+    
+    for destination_info in operation['to']:
         
-        aliquot = get_or_create_aliquot_from_path(instruction.run, oligo_info['destination'])
-        aliquot.properties.update({'sequence':oligo_info['sequence'],
-                                   'scale':oligo_info['scale'],
-                                   'purification':oligo_info['purification']
+        aliquot = get_or_create_aliquot_from_path(instruction.run, destination_info['well'])
+        aliquot.properties.update({'resource_id':resource.id,
+                                   'resource_name': resource.name
                                    })
+        aliquot.add_volume(destination_info['volume'])
         aliquot.save()
         
         AliquotEffect.objects.create(aliquot = aliquot,
                                      instruction = instruction,
-                                     type = 'instruction'
+                                     type = 'instructions'
                                     )
         
-    #@TODO: make an actual api call to order the oligos
-        
-    
     mark_instruction_complete(instruction)
 
 def execute_consolidate(instruction):
@@ -144,7 +147,8 @@ def execute_run(run):
     
     """
     
-    ordered_instructions = run.instructions.all().order_by('-sequence_no')
+    #sequence no asc
+    ordered_instructions = run.instructions.all().order_by('sequence_no')
     
     for instruction in ordered_instructions:
         assert isinstance(instruction,Instruction)
@@ -152,3 +156,26 @@ def execute_run(run):
         
         exec_function(instruction)
         
+    #update properties and names of aliquots (see outs of autoprotocol)
+    for container_label, out_info in run.autoprotocol['outs'].items():
+        
+        for well_idx_str, well_info in out_info.items():
+            aq = get_or_create_aliquot_from_path(run.id, '%s/%s'%(container_label,
+                                                                  well_idx_str))
+            
+            updated = False
+            if 'name' in well_info:
+                updated=True
+                aq.name = well_info['name']
+                
+            if 'properties' in well_info:
+                updated=True
+                aq.properties.update(well_info['properties'])
+                
+            if updated:
+                aq.save()
+    
+    
+    run.status = 'complete'
+    run.completed_at = datetime.now()
+    run.save()

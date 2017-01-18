@@ -29,6 +29,7 @@ from Bio.SeqUtils import GC
 from inventory import get_transcriptic_inventory
 from autoprotocol.util import make_gel_extract_params, make_band_param
 
+get_object_id = id
 
 
 MAX_PIPETTE_TIP_VOLUME = ul(900)
@@ -1036,6 +1037,10 @@ class CustomProtocol(Protocol):
         
         return ref
     
+    def init_all_refs(self):
+        for ref in self.refs.values():
+            if ref.container.id:
+                init_inventory_container(ref.container)
     
     def transfer(self, source, dest, volume, one_source=False, one_tip=False, 
                 aspirate_speed=None, dispense_speed=None, 
