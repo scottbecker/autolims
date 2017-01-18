@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from transcriptic_tools.enums import Temperature
 from autolims.models import (Organization, Run, Project, User, 
-                             Sample)
+                             Container)
 
 
 
@@ -24,7 +24,7 @@ class RunTestCase(TestCase):
         
         cls.org.users.add(cls.user)
 
-    def test_run_setup_all_new_samples(self):
+    def test_run_setup_all_new_containers(self):
         
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19u4jkqxhbt8
         with open(os.path.join(os.path.dirname(__file__),'data','oligosynthesis.json')) as f:
@@ -42,15 +42,15 @@ class RunTestCase(TestCase):
         
         self.assertEqual(run.instructions.count(),7)
         
-        self.assertEqual(run.refs.count(),2)
+        self.assertEqual(run.containers.count(),2)
         
         
     def test_run_setup_existing_containers(self):
         """ Check that Runs can be created that reference existing containers"""
         
-        #create existing samples to be referenced
+        #create existing containers to be referenced
         
-        existing_container = Sample.objects.create(container_type_id = 'micro-1.5',
+        existing_container = Container.objects.create(container_type_id = 'micro-1.5',
                                                    label = 'My Container',
                                                    test_mode = False,
                                                    storage_condition = Temperature.cold_80.name,
@@ -81,7 +81,7 @@ class RunTestCase(TestCase):
         
         self.assertEqual(run.instructions.count(),13)
     
-        self.assertEqual(run.refs.count(),4)
+        self.assertEqual(run.containers.count(),4)
     
         
     

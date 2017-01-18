@@ -18,9 +18,7 @@
             "0": {
                 "name": "pGPS2 pcr primer rev",
                 "properties": {
-                    "Concentration": "100uM",
-                    "Scale": "25nm",
-                    "Sequence": "CCAGCTCGTTGAGTTTCTCC"
+                    "Concentration": "100uM"
                 }
             }
         },
@@ -28,9 +26,7 @@
             "0": {
                 "name": "pGPS2 pcr primer fwd",
                 "properties": {
-                    "Concentration": "100uM",
-                    "Scale": "25nm",
-                    "Sequence": "GGGCACCAATAACTGCCTTA"
+                    "Concentration": "100uM"
                 }
             }
         }
@@ -51,7 +47,7 @@
                     "destination": "pGPS2 pcr primer fwd/0",
                     "scale": "25nm",
                     "purification": "standard",
-                    "sequence": "GGGCACCAATAACTGCCTTA"
+                    "sequence": "CCAGCTCGTTGAGTTTCTCC"
                 },
                 {
                     "destination": "pGPS2 pcr primer rev/0",

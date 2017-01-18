@@ -20,7 +20,7 @@ for container_type in _CONTAINER_TYPES.values():
     
 COVER_TYPES = list(COVER_TYPES)
 
-SAMPLE_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound','pending_destroy']
+CONTAINER_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound','pending_destroy']
 TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 
 RUN_STATUS_CHOICES = ['complete','accepted','in_progress','aborted','canceled']
@@ -75,6 +75,24 @@ class Project(models.Model):
     def __str__(self):
         return self.name if self.name else 'Project %s'%self.id    
    
+   
+class RunContainers(models.Model):
+    run = models.ForeignKey('Run', on_delete=models.CASCADE,
+                            db_constraint=True
+                            )
+    
+    container = models.ForeignKey('Container', on_delete=models.CASCADE,
+                               db_constraint=True
+                            )    
+    
+    #the local label of the container within the run
+    container_label = models.CharField(max_length=200)
+    
+        
+    class Meta:
+        unique_together = ('run', 'container_label', )        
+    
+   
 @python_2_unicode_compatible 
 class Run(models.Model):
     
@@ -105,7 +123,8 @@ class Run(models.Model):
     
     flagged = models.BooleanField(default=False,null=False)
     
-    properties = JSONField(blank=True,null=True)   
+    properties = JSONField(null=True,blank=True,
+                           default=dict)   
     
     autoprotocol = models.TextField(null=True,blank=True)
     
@@ -113,11 +132,36 @@ class Run(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
     
-    refs = models.ManyToManyField('Sample', related_name='related_runs', 
-                                 related_query_name='related_run',
+    containers = models.ManyToManyField('Container', related_name='runs', 
+                                 related_query_name='run',
+                                 through='RunContainers',
                                  db_constraint=True,
                                  null=True,
                                  blank=True)
+    
+    def add_container(self, container_or_container_id, label):
+        
+        if isinstance(container_or_container_id,Container):
+        
+            RunContainers.objects.create(run=self,
+                                      container=container_or_container_id,
+                                      container_label = label
+                                      ) 
+        else:
+            RunContainers.objects.create(run=self,
+                                      container_id=container_or_container_id,
+                                      container_label = label
+                                      )       
+            
+    def remove_container(self,container_or_container_id):
+        if isinstance(container_or_container_id, Container):
+            RunContainers.objects.filter(run=self,
+                                      container=container_or_container_id).delete()
+        else:
+            RunContainers.objects.filter(run=self,
+                                      container_id=container_or_container_id).delete()            
+        
+        
                                  
                                  
     def save(self, *args, **kw):
@@ -132,11 +176,14 @@ class Run(models.Model):
         else:
             new_run = True
             
+        if not isinstance(self.properties,dict):
+            self.properties = {}
+            
         super(Run, self).save(*args, **kw)    
         
         if new_run:
             self.create_instructions()
-            self.populate_refs()            
+            self.populate_containers()            
     
     def create_instructions(self):
         for i, instruction_dict in enumerate(self.autoprotocol['instructions']):
@@ -144,7 +191,7 @@ class Run(models.Model):
                                                      operation = instruction_dict,
                                                      sequence_no = i)
     
-    def populate_refs(self):
+    def populate_containers(self):
         
         organization = self.project.organization
         
@@ -153,7 +200,7 @@ class Run(models.Model):
                 
                 storage_condition = ref_dict['store']['where'] if 'store' in ref_dict else None
                 
-                new_container = Sample.objects.create(container_type_id = ref_dict['new'],
+                new_container = Container.objects.create(container_type_id = ref_dict['new'],
                                                       label = label,
                                                       test_mode = self.test_mode,
                                                       storage_condition = storage_condition,
@@ -161,24 +208,24 @@ class Run(models.Model):
                                                       generated_by_run = self,
                                                       organization = organization
                                                       )
-                self.refs.add(new_container)
+                self.add_container(new_container, label=label)
             else:
                 
-                #check that the existing sample belongs to this org
+                #check that the existing container belongs to this org
                 
-                existing_container = Sample.objects.get(id=ref_dict['id'])
+                existing_container = Container.objects.get(id=ref_dict['id'])
                 
                 if existing_container.organization_id != self.project.organization_id:
                     raise PermissionDenied('Container %s doesn\'t belong to your org'%existing_container.id)
                 
-                self.refs.add(existing_container)
+                self.add_container(existing_container, label=label)
     
     def __str__(self):
         return self.title     
 
 
 @python_2_unicode_compatible
-class Sample(models.Model):
+class Container(models.Model):
     
     #transcriptic fields
     container_type_id = models.CharField(max_length=200,
@@ -214,15 +261,16 @@ class Sample(models.Model):
                                          blank=True)
     
     status = models.CharField(max_length=200,
-                              choices=zip(SAMPLE_STATUS_CHOICES,
-                                          SAMPLE_STATUS_CHOICES),
+                              choices=zip(CONTAINER_STATUS_CHOICES,
+                                          CONTAINER_STATUS_CHOICES),
                               null=False,
                               default='available',
                               blank=False)
     
     expires_at = models.DateTimeField(null=True, blank=True)
     
-    properties = JSONField(blank=True,null=True) 
+    properties = JSONField(null=True,blank=True,
+                       default=dict)
     
     generated_by_run = models.ForeignKey(Run, on_delete=models.CASCADE, 
                                      related_name='generated_containers', 
@@ -260,19 +308,22 @@ class Sample(models.Model):
             
         if self.generated_by_run_id:
             #check that the project of the generated run and the current org are the same
-            assert self.generated_by_run.project.organization_id == self.organization_id, "Can't use a sample from one org in another org's run"
+            assert self.generated_by_run.project.organization_id == self.organization_id, "Can't use a container from one org in another org's run"
         
-        super(Sample, self).save(*args, **kwargs)
+        if not isinstance(self.properties,dict):
+            self.properties = {}            
+        
+        super(Container, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.label if self.label else 'Sample %s'%self.id 
+        return self.label if self.label else 'Container %s'%self.id 
 
 @python_2_unicode_compatible
 class Aliquot(models.Model):
     
-    name = models.CharField(max_length=200,null=True)
+    name = models.CharField(max_length=200,null=True,blank=True)
     
-    container = models.ForeignKey(Sample, on_delete=models.CASCADE, 
+    container = models.ForeignKey(Container, on_delete=models.CASCADE, 
                                   related_name='aliquots', 
                                   related_query_name='aliquot',
                                   db_constraint=True
@@ -283,7 +334,8 @@ class Aliquot(models.Model):
     
     volume_ul = models.CharField(max_length=200,null=False,default='0',blank=False)
   
-    properties = JSONField(blank=True,null=True)    
+    properties = JSONField(null=True,blank=True,
+                       default=dict)    
     
     #resource
     #lot_no
@@ -294,6 +346,13 @@ class Aliquot(models.Model):
 
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)    
+    
+    def save(self,*args, **kw):
+        if not isinstance(self.properties,dict):
+            self.properties = {}        
+        
+        super(Aliquot, self).save(*args, **kwargs)
+        
     
     def __str__(self):
         return '%s/%s'%self.container.label,self.well_idx
