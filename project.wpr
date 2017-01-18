@@ -32,7 +32,7 @@ proj.file-type = 'shared'
 proj.launch-config = {loc('autolims/tests.py'): ('project',
         (u'',
          'launch-uEyrOyU4OvN768uR')),
-                      loc('manage.py'): ('custom',
+                      loc('manage.py'): ('project',
         (u'',
          'launch-uEyrOyU4OvN768uR'))}
 proj.main-file = loc('manage.py')

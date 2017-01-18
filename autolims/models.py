@@ -26,9 +26,11 @@ TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 RUN_STATUS_CHOICES = ['complete','accepted','in_progress','aborted','canceled']
 
 
-EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instruction']
+ALIQUOT_EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instruction']
 
 DATA_TYPES = ['image_plate','platereader','measure']
+
+RESOURCE_KINDS = ['Reagent','NucleicAcid']
 
 DEFAULT_ORGANIZATION = 1
 
@@ -462,25 +464,25 @@ class Data(models.Model):
 @python_2_unicode_compatible
 class AliquotEffect(models.Model):
     
-    affected_aliquot = models.ForeignKey(Aliquot,
-                                         on_delete=models.CASCADE,
-                                         related_name='aliquot_effects',
-                                         related_query_name='aliquot_effect',
-                                         db_constraint=True)
+    aliquot = models.ForeignKey(Aliquot,
+                                on_delete=models.CASCADE,
+                                related_name='aliquot_effects',
+                                related_query_name='aliquot_effect',
+                                db_constraint=True)
     
     
-    generating_instruction = models.ForeignKey(Instruction, on_delete=models.CASCADE, 
-                                              related_name='aliquot_effects', 
-                                              related_query_name='aliquot_effect', 
-                                              db_constraint=True)
+    instruction = models.ForeignKey(Instruction, on_delete=models.CASCADE, 
+                                    related_name='aliquot_effects', 
+                                    related_query_name='aliquot_effect', 
+                                    db_constraint=True)
     
-    effect_data = JSONField(blank=True,null=True)  
+    data = JSONField(blank=True,null=True)  
     
-    effect_type = models.CharField(max_length=200,
-                                   choices=zip(EFFECT_TYPES,
-                                               EFFECT_TYPES),
+    type = models.CharField(max_length=200,
+                                   choices=zip(ALIQUOT_EFFECT_TYPES,
+                                               ALIQUOT_EFFECT_TYPES),
                                    null=False,
-                                   default=EFFECT_TYPES[0],
+                                   default=ALIQUOT_EFFECT_TYPES[0],
                                    blank=False)
     
     deleted_at = models.DateTimeField(null=True, blank=True)
@@ -491,7 +493,64 @@ class AliquotEffect(models.Model):
     
     def __str__(self):
         return 'Aliquot Effect %s'%self.id
+
+@python_2_unicode_compatible
+class Resource(models.Model):
+    name = models.CharField(max_length=200,blank=True,
+                            default='')
     
+    description = models.TextField(blank=True,null=True)
+    
+
+    storage_condition = models.CharField(max_length=200,
+                                         choices=zip(TEMPERATURE_NAMES,TEMPERATURE_NAMES),
+                                         default=Temperature.ambient.name,
+                                         null=True,
+                                         blank=True)
+    sensitivities = JSONField(null=True,blank=True,
+                              default=list)
+    
+    properties = JSONField(null=True,blank=True,
+                       default=dict)  
+    
+    kind = models.CharField(max_length=200,
+                            choices=zip(RUN_STATUS_CHOICES,
+                                        RUN_STATUS_CHOICES),
+                            null=False,
+                            default='available',
+                            blank=False)    
+    
+
+    transcriptic_id = models.CharField(max_length=200,blank=True,null=True,
+                                       default='')
+
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)    
+    
+    updated_at = models.DateTimeField(auto_now=True)  
+    
+    def __str__(self):
+        return self.name if self.name else 'Resource %s'%self.id
+    
+    def save(self, *args, **kwargs):
+    
+        if not isinstance(self.sensitivities,list):
+            self.sensitivities = []           
+    
+        if not isinstance(self.properties,dict):
+            self.properties = []          
+    
+        super(Resource, self).save(*args, **kwargs)    
+    
+    
+    
+#@python_2_unicode_compatible
+#class Kit(models.Model):
+#https://secure.transcriptic.com/_commercial/kits?format=json
+
+#@python_2_unicode_compatible
+#class KitItem(models.Model):
+#https://secure.transcriptic.com/_commercial/kits/kit19jybkyf8ddv/kit_items?format=json
     
 
     

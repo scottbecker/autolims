@@ -4,7 +4,7 @@ import os
 from decimal import Decimal
 from autolims.autoprotocol_interpreter import execute_run
 from autolims.models import (Organization, Project, Run,
-                             Sample,
+                             Container,
                              User, Aliquot
                              )
 
@@ -46,13 +46,13 @@ class AutoprotocolInterpreterTestCase(TestCase):
         
         execute_run(run)
         
-        #two Samples should have been made
+        #two Containers should have been made
         self.assertEqual(run.refs.count(),2)
         
         #check that aliquots have been made and the volumes have been updated for those refs
         
         for container in run.refs.all():
-            assert isinstance(container,Sample)
+            assert isinstance(container,Container)
             aliquot = container.aliquots.first() # type: Aliquot
             assert isinstance(aliquot, Aliquot)
             self.assertEqual(Decimal(aliquot.volume_ul),

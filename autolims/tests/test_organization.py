@@ -3,7 +3,7 @@ from autolims.models import Organization
 
 class OrganizationTestCase(TestCase):
     def setUp(self):
-        super(RunTestCase,cls).setUpClass()
+        super(OrganizationTestCase,cls).setUp()
         Organization.objects.create(name="test", subdomain="test")
 
     def test_organization(self):

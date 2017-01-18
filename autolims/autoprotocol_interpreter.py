@@ -1,6 +1,10 @@
 from django.db import transaction
 from datetime import datetime
-from autolims.models import Instruction, Aliquot,Container
+from autolims.models import (Instruction, Aliquot,Container,
+                             AliquotEffect)
+
+from transcriptic_tools.inventory import get_transcriptic_inventory
+from transcriptic_tools.enums import Reagent
 
 def get_or_create_aliquot_from_path(run, aliquot_path):
     """
@@ -33,9 +37,6 @@ def get_or_create_aliquot_from_path(run, aliquot_path):
 # ------ Instruction Executers --------
 
 def execute_oligosynthesis(instruction):
-    
-    #update well properties
-    
     operation = instruction.operation
     
     for oligo_info in operation['oligos']:
@@ -47,8 +48,14 @@ def execute_oligosynthesis(instruction):
                                    })
         aliquot.save()
         
+        AliquotEffect.objects.create(aliquot = aliquot,
+                                     instruction = instruction,
+                                     type = 'instruction'
+                                    )
+        
     #@TODO: make an actual api call to order the oligos
         
+    
     mark_instruction_complete(instruction)
     
     
@@ -74,7 +81,28 @@ def execute_uncover(instruction):
     raise NotImplementedError
 
 def execute_provision(instruction):
-    raise NotImplementedError
+    operation = instruction.operation
+    
+    resource_name = operation['resource_id']
+    
+    for oligo_info in operation['oligos']:
+        
+        aliquot = get_or_create_aliquot_from_path(instruction.run, oligo_info['destination'])
+        aliquot.properties.update({'sequence':oligo_info['sequence'],
+                                   'scale':oligo_info['scale'],
+                                   'purification':oligo_info['purification']
+                                   })
+        aliquot.save()
+        
+        AliquotEffect.objects.create(aliquot = aliquot,
+                                     instruction = instruction,
+                                     type = 'instruction'
+                                    )
+        
+    #@TODO: make an actual api call to order the oligos
+        
+    
+    mark_instruction_complete(instruction)
 
 def execute_consolidate(instruction):
     raise NotImplementedError
@@ -94,10 +122,10 @@ def get_instruction_executer(operation):
     
     execute_func_name = 'execute_%s'%operation
     
-    if execute_func_name in locals():
-        return locals()[execute_func_name]
+    if execute_func_name in globals():
+        return globals()[execute_func_name]
     
-    return locals()['mark_instruction_complete']
+    return globals()['mark_instruction_complete']
     
 
 @transaction.atomic
