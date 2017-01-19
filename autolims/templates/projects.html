@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}Projects for {{organization_name}}{% endblock %}
+
+{% block content %}
+    
+    
+    <table class="table table-bordered table-hover" >
+    <thead >
+    <tr>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for project in object_list %}
+    <tr role="button" class='clickable-row' data-href='{{ project.get_absolute_url }}'>
+        <td>{{ project.name }}</td>
+    </td>
+    {% empty %}
+        <li>No projects yet.</li>
+    {% endfor %}
+    </tbody>
+    </table>
+
+
+    
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+    });
+});    
+</script>
+{% endblock %}  

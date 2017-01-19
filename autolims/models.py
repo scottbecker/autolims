@@ -40,7 +40,8 @@ class Organization(models.Model):
     name = models.CharField(max_length=200,blank=True,
                             default='')
     subdomain = models.CharField(max_length=200,blank=True,
-                                 default='')
+                                 default='',
+                                 db_index=True)
     
     users = models.ManyToManyField(User)
     
@@ -49,6 +50,9 @@ class Organization(models.Model):
 
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)    
+    
+    def get_absolute_url(self):
+        return "/%s/" % self.subdomain    
     
     def __str__(self):
         return self.name if self.name else 'Organization %s'%self.id
@@ -67,13 +71,15 @@ class Project(models.Model):
                                      default=DEFAULT_ORGANIZATION
                                      )  
     
-   
-    
     archived_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)    
 
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)    
+    
+    def get_absolute_url(self):
+        return "/%s/project/%s/"%(self.organization.subdomain,
+                                  self.id)
     
     def __str__(self):
         return self.name if self.name else 'Project %s'%self.id    
