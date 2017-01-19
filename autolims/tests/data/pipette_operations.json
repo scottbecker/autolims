@@ -1,0 +1,92 @@
+{
+    "refs": {
+        "test plate": {
+            "new": "24-deep", 
+            "discard": true
+        }
+        }, 
+    "time_constraints": [], 
+    "instructions": [
+        {
+            "to": [
+                {
+                    "volume": "900.0:microliter", 
+                    "well": "test plate/0"
+                }
+                ], 
+            "op": "provision", 
+            "resource_id": "rs17gmh5wafm5p"
+            }, 
+        {
+            "groups": [
+                {
+                    "transfer": [
+                        {
+                            "volume": "100.0:microliter", 
+                            "to": "test plate/1", 
+                            "from": "test plate/0", 
+                            "mix_after": {
+                                "volume": "50.0:microliter", 
+                                "repetitions": 5, 
+                                "speed": "50.0:microliter/second"
+                            }
+                        }
+                    ]
+                    }, 
+                {
+                    "distribute": {
+                        "to": [
+                            {
+                                "volume": "20.0:microliter", 
+                                "well": "test plate/2"
+                                }, 
+                            {
+                                "volume": "20.0:microliter", 
+                                "well": "test plate/3"
+                            }
+                            ], 
+                        "from": "test plate/0", 
+                        "allow_carryover": false
+                    }
+                    }, 
+                {
+                    "consolidate": {
+                        "to": "test plate/4", 
+                        "from": [
+                            {
+                                "volume": "15.0:microliter", 
+                                "well": "test plate/0"
+                                }, 
+                            {
+                                "volume": "15.0:microliter", 
+                                "well": "test plate/1"
+                            }
+                            ], 
+                        "allow_carryover": true
+                    }
+                    }, 
+                {
+                    "mix": [
+                        {
+                            "volume": "372.5:microliter", 
+                            "well": "test plate/0", 
+                            "repetitions": 5, 
+                            "speed": "372.0:microliter/second"
+                        }
+                    ]
+                    }, 
+                {
+                    "mix": [
+                        {
+                            "volume": "42.5:microliter", 
+                            "well": "test plate/1", 
+                            "repetitions": 5, 
+                            "speed": "42.0:microliter/second"
+                        }
+                    ]
+                }
+                ], 
+            "op": "pipette"
+        }
+    ]
+}

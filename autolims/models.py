@@ -222,6 +222,9 @@ class Run(models.Model):
                 
                 existing_container = Container.objects.get(id=ref_dict['id'])
                 
+                if existing_container.status == 'destroyed':
+                    raise Exception('Destoryed container referenced in run: Container id %s'%existing_container.id)
+                
                 if existing_container.organization_id != self.project.organization_id:
                     raise PermissionDenied('Container %s doesn\'t belong to your org'%existing_container.id)
                 
@@ -271,7 +274,7 @@ class Container(models.Model):
                               choices=zip(CONTAINER_STATUS_CHOICES,
                                           CONTAINER_STATUS_CHOICES),
                               null=False,
-                              default='available',
+                               default='available',
                               blank=False)
     
     expires_at = models.DateTimeField(null=True, blank=True)
@@ -301,6 +304,94 @@ class Container(models.Model):
 
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)
+    
+    @classmethod
+    def get_container_from_run_and_container_label(cls, run_id, container_label):
+        return cls.objects.get(run_container__run_id = run_id,
+                               run_container__container_label = container_label)
+    
+    @property
+    def col_count(self):
+        container_type = _CONTAINER_TYPES[self.container_type_id]
+        return container_type.col_count
+    
+    @property
+    def row_count(self):
+        container_type = _CONTAINER_TYPES[self.container_type_id]
+        return container_type.row_count()    
+    
+    def well_indexes_from(self, start, num, columnwise=False):
+        """
+        Return a list of indexes belonging to this Container starting from
+        the index indicated (in integer or string form) and including the
+        number of proceeding wells specified. well indexes are counted from the
+        starting well rowwise unless columnwise is True.
+
+        Parameters
+        ----------
+        start : Well, int, str
+            Starting well specified as a Well object, a human-readable well
+            index or an integer well index.
+        num : int
+            Number of wells to include in the Wellgroup.
+        columnwise : bool, optional
+            Specifies whether the wells included should be counted columnwise
+            instead of the default rowwise.
+
+        """        
+        
+        container_type = _CONTAINER_TYPES[self.container_type_id]
+        
+        start = container_type.robotize(start)
+        
+        if columnwise:
+            row, col = container_type.decompose(start)
+            num_rows = self.row_count
+            start = col * num_rows + row      
+            
+        return range(start,start + num)
+    
+    def get_column_well_indexes(self, column_index_or_indexes):
+            
+        if isinstance(column_index_or_indexes,list):
+            result = []
+            for column_index in column_index_or_indexes:
+                result+=self.get_column_wells(self, column_index)
+                
+            return result
+        
+        column_index = column_index_or_indexes
+        
+        num_cols = self.col_count
+        num_rows = self.row_count 
+        
+        if column_index >= num_cols:
+            raise ValueError('column index %s is too high, only %s cols in this container'%(column_index,num_cols))
+        
+        start = num_rows*column_index
+        
+        return self.all_well_indexes(columnwise=True)[start:start+num_rows]
+    
+    def all_well_indexes(self, columnwise=False):
+        """
+        Return a list of indexes representing all Wells belonging to this Container.
+
+        Parameters
+        ----------
+        columnwise : bool, optional
+            returns the WellGroup columnwise instead of rowwise (ordered by
+            well index).
+
+        """
+        if columnwise:
+            num_cols = self.col_count
+            num_rows = self.row_count
+            
+            return [row * num_cols + col
+                    for col in xrange(num_cols)
+                    for row in xrange(num_rows)]
+        else:
+            return range(0,self.col_count*self.row_count)  
     
     def save(self, *args, **kwargs):
         
@@ -366,10 +457,28 @@ class Aliquot(models.Model):
         else:
             added_volume = Unit(volume_to_add,'microliter')
             
+        added_volume = round_volume(added_volume,2)
+        
         #instruments have at most 0.00uL precision
         new_volume = round_volume(current_volume+added_volume,2)
             
         self.volume_ul = str(new_volume.to('microliter').magnitude)
+        
+        return added_volume
+    
+    def subtract_volume(self, volume_to_add):
+        """
+        Handles volume strings, e.g. '5:nanoliter'
+        """
+    
+        current_volume = Unit(self.volume_ul,'microliter')
+    
+        if isinstance(volume_to_add,basestring) and ':' in volume_to_add:
+            subtracted_volume = Unit(volume_to_add)
+        else:
+            subtracted_volume = Unit(volume_to_add,'microliter')
+    
+        return self.add_volume(-1*subtracted_volume)   
             
     
     def save(self,*args, **kwargs):
