@@ -1,5 +1,5 @@
 from django.db import transaction
-from datetime import datetime
+from django.utils import timezone
 from autolims.models import (Instruction, Aliquot,Container,
                              AliquotEffect, Resource)
 
@@ -111,7 +111,7 @@ def execute_pipette(instruction):
         
             for destination_info in distribute_op['to']:
                 volume_transfers.append({
-                    'to_aq_path':destination_info['to'],
+                    'to_aq_path':destination_info['well'],
                     'from_aq_path':distribute_op['from'],
                     'volume_str':destination_info['volume']}
                                         )
@@ -122,7 +122,7 @@ def execute_pipette(instruction):
             for source_info in consolidate_op['from']:
                 volume_transfers.append({
                     'to_aq_path':consolidate_op['to'],
-                    'from_aq_path':source_info['from'],
+                    'from_aq_path':source_info['well'],
                     'volume_str':source_info['volume']}
                                         )
         elif pipette_operation_type == 'mix':
@@ -253,7 +253,7 @@ def execute_stamp(instruction):
     raise NotImplementedError
 
 def mark_instruction_complete(instruction):
-    instruction.completed_at = datetime.now()
+    instruction.completed_at = timezone.now()
     instruction.save()
 
 
@@ -293,7 +293,9 @@ def execute_run(run):
         exec_function(instruction)
         
     #update properties and names of aliquots (see outs of autoprotocol)
-    for container_label, out_info in run.autoprotocol['outs'].items():
+  
+    
+    for container_label, out_info in run.autoprotocol.get('outs',{}).items():
         
         for well_idx_str, well_info in out_info.items():
             aq = get_or_create_aliquot_from_path(run.id, '%s/%s'%(container_label,
@@ -327,5 +329,5 @@ def execute_run(run):
     
     
     run.status = 'complete'
-    run.completed_at = datetime.now()
+    run.completed_at = timezone.now()
     run.save()

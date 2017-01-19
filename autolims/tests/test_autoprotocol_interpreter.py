@@ -162,6 +162,31 @@ class AutoprotocolInterpreterTestCase(TestCase):
         
         
     def test_pipette_operations(self):
-        pass
+    
+        #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19uvbk55tb54
+        with open(os.path.join(os.path.dirname(__file__),'data','pipette_operations.json')) as f:
+            autoprotocol = json.loads(f.read())             
+    
+        run = Run.objects.create(title='Pipette Operation Run',
+                                 test_mode=False,
+                                 autoprotocol=autoprotocol,
+                                 project = self.project,
+                                 owner=self.user)
+        assert isinstance(run, Run)
+    
+        execute_run(run)
+    
+        self.assertEqual(run.containers.count(),1)   
+        self.assertEqual(run.instructions.count(),2)    
+    
+        test_plate = run.containers.get(label='test plate')
         
+        volumes = [Decimal('745'),Decimal('85'),Decimal('20'),Decimal('20'),Decimal('30')]
         
+        self.assertEqual(test_plate.aliquots.count(),5)
+        
+        for aq in test_plate.aliquots.all():
+            assert isinstance(aq, Aliquot)
+            self.assertEqual(Decimal(aq.volume_ul),volumes[aq.well_idx])
+        
+    
