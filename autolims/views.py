@@ -3,14 +3,14 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, serializers
 from serializers import UserSerializer, GroupSerializer
 from django.http import HttpResponse
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.conf import settings
 
-from models import Project, Organization
+from models import Project, Organization, Run
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -46,11 +46,11 @@ class HomePageView(TemplateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class OrgValidatingListView(ListView):
+class OrgValidatingView(View):
 
     
     def dispatch(self, *args, **kwargs):
-        
+       
         valid_org = self.get_valid_current_org()
         
         if not valid_org:
@@ -61,7 +61,7 @@ class OrgValidatingListView(ListView):
         
         self.organization = valid_org
         
-        return super(OrgValidatingListView, self).dispatch(*args, **kwargs)
+        return super(OrgValidatingView, self).dispatch(*args, **kwargs)
     
     def get_valid_current_org(self):
         
@@ -75,13 +75,11 @@ class OrgValidatingListView(ListView):
         
         return org_query.first()
         
-class ProjectListView(OrgValidatingListView):
+class ProjectListView(OrgValidatingView,ListView):
     model = Project
     template_name = 'projects.html'    
     
     def get_queryset(self):
-        
-        self.organization = Organization.objects.get(subdomain=self.kwargs['org_subdomain'])
         
         return Project.objects.filter(organization__subdomain=self.kwargs['org_subdomain'])\
                .order_by('id')
@@ -92,4 +90,67 @@ class ProjectListView(OrgValidatingListView):
     
         context_data['organization_name'] = self.organization.name
     
+        return context_data    
+    
+    
+class RunListView(OrgValidatingView, TemplateView):
+    model = Run
+    template_name = 'runs.html'    
+    
+    
+    def get(self, request, *args, **kwargs):
+
+        self.scheduled_runs = Run.objects.filter(project_id=self.kwargs['project_id'],
+                                                 test_mode=False,
+                                                 status__in=['accepted','in_progress']
+                                                 )\
+            .order_by('created_at')
+
+        self.completed_runs = Run.objects.filter(project_id=self.kwargs['project_id'],
+                                                 test_mode=False,
+                                                 status__in = ['complete',
+                                                               'aborted'])\
+            .order_by('created_at')
+        
+        self.test_runs = Run.objects.filter(project_id=self.kwargs['project_id'],
+                                         test_mode=True)\
+            .order_by('created_at')
+        
+        self.canceled_runs = Run.objects.filter(project_id=self.kwargs['project_id'],
+                                                status='canceled',
+                                                test_mode=False)\
+            .order_by('created_at')        
+
+        self.project = Project.objects.filter(id=self.kwargs['project_id'])
+            
+           
+
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)    
+    
+
+    def get_context_data(self, *args, **kwargs):
+    
+        context_data = {
+            'sections': [
+                {
+                    'name':'Scheduled Runs',
+                    'runs': self.scheduled_runs
+                },
+                {
+                    'name':'Completed Runs',
+                    'runs': self.completed_runs
+                }, 
+                {
+                    'name':'Test Runs',
+                    'runs': self.test_runs
+                },
+                {
+                    'name':'Canceled Runs',
+                    'runs': self.canceled_runs
+                },                    
+            ],
+            'project': self.project,
+        }
+        
         return context_data    

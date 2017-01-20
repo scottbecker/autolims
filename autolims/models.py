@@ -24,7 +24,7 @@ COVER_TYPES = list(COVER_TYPES)
 CONTAINER_STATUS_CHOICES = ['available','destroyed','returned','inbound','outbound','pending_destroy']
 TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 
-RUN_STATUS_CHOICES = ['complete','accepted','in_progress','aborted','canceled']
+RUN_STATUS_CHOICES = ['accepted','in_progress','complete','aborted','canceled']
 
 
 ALIQUOT_EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instructions']
@@ -78,7 +78,7 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)    
     
     def get_absolute_url(self):
-        return "/%s/project/%s/"%(self.organization.subdomain,
+        return "/%s/%s/runs"%(self.organization.subdomain,
                                   self.id)
     
     def __str__(self):
@@ -109,7 +109,7 @@ class RunContainer(models.Model):
 @python_2_unicode_compatible 
 class Run(models.Model):
     
-    title = models.CharField(max_length=1000,null=True)
+    title = models.CharField(max_length=1000,null=True,blank=True)
     
     status = models.CharField(max_length=200,
                           choices=zip(RUN_STATUS_CHOICES,
@@ -185,6 +185,10 @@ class Run(models.Model):
             orig_run = Run.objects.get(id=self.id)
             if orig_run.autoprotocol != self.autoprotocol:
                 raise Exception, "unable to edit autoprotocol on a run"
+            
+            if not self.title:
+                self.name = 'Run %s'%self.id
+            
         #new run
         else:
             new_run = True
@@ -192,7 +196,15 @@ class Run(models.Model):
         if not isinstance(self.properties,dict):
             self.properties = {}
             
-        super(Run, self).save(*args, **kw)    
+        super(Run, self).save(*args, **kw)
+        
+        #only hit if this is a new Run
+        if not self.title:
+            self.title = self.name = 'Run %s'%self.id
+            super(Run, self).save(*args, **kw)
+        
+        
+        
         
         if new_run:
             self.create_instructions()
@@ -237,7 +249,12 @@ class Run(models.Model):
                 self.add_container(existing_container, label=label)
     
     def __str__(self):
-        return self.title     
+        return self.title    
+    
+    class Meta:
+        index_together = [
+            ['project','test_mode','status']
+        ]
 
 
 @python_2_unicode_compatible

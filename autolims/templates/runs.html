@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
 
-{% block title %}Projects for {{organization_name}}{% endblock %}
+{% block title %}{{project.name}}{% endblock %}
 
 {% block content %}
     
-    
+    {% for section in sections %}
+    <h2>{{section.name}}</h2>
     <table class="table table-bordered table-hover" >
     <thead >
     <tr>
@@ -13,14 +14,16 @@
     </tr>
     </thead>
     <tbody>
-    {% for project in object_list %}
-    <tr role="button" class='clickable-row' data-href='{{ project.get_absolute_url }}'>
-        <td>{{ project.name }}</td>
-    </tr>
-    {% endfor %}
+    
+        {% for run in section.runs %}
+        <tr role="button" class='clickable-row' data-href='{{ run.get_absolute_url }}'>
+            <td>{{ run }}</td>
+        </tr>
+        {% endfor %}
+    
     </tbody>
     </table>
-
+    {% endfor %}
 
     
 {% endblock %}
