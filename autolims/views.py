@@ -232,6 +232,7 @@ class RunView(RunAuthenticatingView, TemplateView):
         context_data.update({
             'run': self.run,
             'instructions': self.run.instructions.all().order_by('sequence_no'),
+            'containers': self.run.containers.all(),
             'project': self.project,
         })
         
