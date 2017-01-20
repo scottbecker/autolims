@@ -1,3 +1,10 @@
 {% extends 'bootstrap3/bootstrap3.html' %}
 
-{% block bootstrap3_title %}{% block title %}{% endblock %}{% endblock %}
+{% block bootstrap3_title %}{% endblock %}
+
+{% block bootstrap3_extra_script %}
+<script type="text/javascript">
+    {% block extra_js %}  
+    {% endblock %}  
+</script>
+{% endblock %}  

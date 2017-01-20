@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
 
-{% block title %}Projects for {{organization_name}}{% endblock %}
+{% block title %}Projects{% endblock %}
 
 {% block content %}
     
@@ -24,13 +24,3 @@
 
     
 {% endblock %}
-
-{% block bootstrap3_extra_script %}
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $(".clickable-row").click(function() {
-        window.document.location = $(this).data("href");
-    });
-});    
-</script>
-{% endblock %}  

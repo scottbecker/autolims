@@ -30,10 +30,11 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
+    url(r'', include('autolims.urls')),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^files/', include('db_file_storage.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
     url('^', include('django.contrib.auth.urls')),
-    url(r'', include('autolims.urls')),
+    
 ]

@@ -39,8 +39,8 @@ DEFAULT_ORGANIZATION = 1
 class Organization(models.Model):
     name = models.CharField(max_length=200,blank=True,
                             default='')
-    subdomain = models.CharField(max_length=200,blank=True,
-                                 default='',
+    subdomain = models.CharField(max_length=200,
+                                 unique=True,
                                  db_index=True)
     
     users = models.ManyToManyField(User)
@@ -250,6 +250,10 @@ class Run(models.Model):
     
     def __str__(self):
         return self.title    
+    
+    def get_absolute_url(self):
+        return "/%s/%s/runs/%s"%(self.project.organization.subdomain,
+                                  self.project_id, self.id)    
     
     class Meta:
         index_together = [
@@ -537,9 +541,7 @@ class Instruction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)    
         
     updated_at = models.DateTimeField(auto_now=True)       
-    
-    
-    
+   
     class Meta:
         unique_together = ('run', 'sequence_no',)    
     
