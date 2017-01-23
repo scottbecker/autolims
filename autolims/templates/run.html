@@ -12,8 +12,27 @@
 {% block content %}
     
     
+<div class="row">
 
-<div class="modal-body row">
+{% if run.status == 'accepted' %}
+  <form style='display:inline' method="POST" action="{{request.path}}/cancel/">
+    <button type="submit" class="btn btn-danger">Cancel Run</button>
+  </form>  
+  <form style='display:inline' method="POST" action="{{request.path}}/execute/">
+    <button type="submit" class="btn btn-success">Execute Run</button>
+  </form>
+
+{% elif run.status == 'in_progress' %}
+  <form style='display:inline' method="POST" action="{{request.path}}/abort/">
+    <button type="submit" class="btn btn-danger">Abort</button>
+  </form>  
+{% endif %}
+
+
+</div>
+
+
+<div class="row">
   <div class="col-md-6">
     {# Left Column  #}
     <p>
@@ -48,41 +67,41 @@
   <div class="col-md-6">
     <!-- Right Columns -->
     
+      <h3 class="row col-md-12">Containers</h3>
+
+      <div class="col-md-4">
+        
+        
+        <ul class="nav nav-pills nav-stacked">
+        
+            {% for run_container in run_containers %}
+        
+          <li {% if forloop.counter0 == 0 %} class="active" {% endif %}><a data-toggle="pill" href="#container{{run_container.id}}">{{ run_container.container_label}}</a></li>
+          
+            {% endfor %}    
+      
+        </ul>
+      </div>
+
+      <div class="tab-content col-md-8">
+
+        {% for run_container in run_containers %}
+     
+          <div id="container{{run_container.id}}" class="tab-pane fade {% if forloop.counter0 == 0 %} in active {% endif %}">
+            
+            {% include 'container_quickview.html' with run_container=run_container %}
+            
+          </div>
+       
+        {% endfor %}      
+  
+      </div>
+
+    </div>
     
-
-<div class="container">
-
-<h3 class="col-md-12">Containers</h3>
-
-<div class="col-md-2">
-  
-  
-  <ul class="nav nav-pills nav-stacked">
-  
-      {% for run_container in run_containers %}
-  
-    <li {% if forloop.counter0 == 0 %} class="active" {% endif %}><a data-toggle="pill" href="#container{{run_container.id}}">{{ run_container.container_label}}</a></li>
-    
-      {% endfor %}    
-
-  </ul>
   </div>
-
-<div class="tab-content col-md-10">
-
-   {% for run_container in run_containers %}
-
-  <div id="container{{run_container.id}}" class="tab-pane fade {% if forloop.counter0 == 0 %} in active {% endif %}">
     
-    {% include 'container_quickview.html' with run_container=run_container %}
-  </div>
-  
-   {% endfor %}      
-  
 </div>
-
-</div>
-    
     
     
     
