@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}<a href='{{ request.path }}'>Containers</a>{% endblock %}
+
+{% block content %}
+    
+    
+    
+    <table class="table table-bordered table-hover" >
+    <thead >
+    <tr>
+        <th>Label</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        {% for container in containers %}
+    
+            <tr role="button" class='clickable-row' data-href='{{ container.get_absolute_url }}'>
+                <td>{{ container }}</td>
+            </tr>
+        
+         {% endfor %}
+        
+        
+    </tbody>
+    </table>
+   
+
+
+{% endblock %}

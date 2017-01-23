@@ -79,6 +79,8 @@ class Reagent(CustomEnum):
     
     peg_6000_24percent = 60
     
+    t3_primer_100_micromolar = 61
+    
     
     
     @property

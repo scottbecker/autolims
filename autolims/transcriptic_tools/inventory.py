@@ -49,6 +49,8 @@ def get_transcriptic_inventory(include_lowercase=True):
         Reagent.t4_polynucleotide_kinase_buffer_a_10x:'rs16pc9rd5sg5d', #thermo
         Reagent.atp_100mM: 'rs16pccshb6cb4',
         
+        Reagent.t3_primer_100_micromolar: 'rs17tcp6dkdanb',
+        
         Reagent.pUC19_1ug_per_ul       : 'rs17tcqmncjfsh', # catalog; pUC19; cold_20    
         Reagent.pHSG298_500ng_per_ul     : 'rs18rx5pyh6fku',
         Reagent.pUC19_100pg_per_ul: 'rs18rx59spw2t8',
@@ -80,7 +82,20 @@ def get_transcriptic_inventory(include_lowercase=True):
         
     return inventory
 
-
+def get_reagent_by_transcritpic_resource_id(resource_id, fail_if_not_found=True):
+    transcriptic_inventory = get_transcriptic_inventory()
+    
+    reverse_inventory_mapping = {v: k for k, v in transcriptic_inventory.iteritems()}
+    
+    reagent =  reverse_inventory_mapping.get(resource_id)
+    
+    if not reagent and fail_if_not_found:
+        raise Exception, 'no reagent found with resource id %s'%resource_id
+    
+    assert isinstance(reagent,Reagent)
+    
+    return reagent
+    
 
 def get_our_inventory(is_test_mode):
     

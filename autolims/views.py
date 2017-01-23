@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, serializers
@@ -11,7 +13,9 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from models import Project, Organization, Run
+
+
+from models import Project, Organization, Run, Container
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -52,6 +56,7 @@ class HomePageView(View):
         return redirect(reverse('projects', 
                                 kwargs={'organization_subdomain':organization.subdomain}))
 
+
 #class OrgAuthenticatingListView(ListView):
     
 
@@ -65,6 +70,7 @@ class AuthenticatingView(View):
         if not self.authenticate(self.request):
             return redirect('%s?next=%s' % (settings.LOGIN_URL, self.request.path))    
         return super(AuthenticatingView, self).dispatch(*args, **kwargs)  
+    
 
 class OrganizationAuthenticatingView(AuthenticatingView):
 
@@ -96,6 +102,15 @@ class OrganizationAuthenticatingView(AuthenticatingView):
         
         return org_query.first()
     
+    def get_context_data(self, *args, **kwargs):
+    
+        context_data = super(OrganizationAuthenticatingView, self).get_context_data(*args, **kwargs)    
+    
+        context_data['organization_subdomain'] = self.kwargs['organization_subdomain']
+        context_data['organization_name'] = self.organization.name    
+    
+        return context_data       
+    
     
         
 class ProjectListView(OrganizationAuthenticatingView,ListView):
@@ -107,14 +122,6 @@ class ProjectListView(OrganizationAuthenticatingView,ListView):
         return Project.objects.filter(organization__subdomain=self.kwargs['organization_subdomain'])\
                .order_by('id')
     
-    def get_context_data(self, *args, **kwargs):
-        context_data = super(ProjectListView, self).get_context_data(*args, **kwargs)
-        
-        self.organization = Organization.objects.get(subdomain=self.kwargs['organization_subdomain'])
-        context_data['organization_subdomain'] = self.kwargs['organization_subdomain']
-        context_data['organization_name'] = self.organization.name
-    
-        return context_data    
 
 class ProjectAuthenticatingView(OrganizationAuthenticatingView):
     def authenticate(self, request):
@@ -140,7 +147,6 @@ class ProjectAuthenticatingView(OrganizationAuthenticatingView):
 class RunListView(ProjectAuthenticatingView, TemplateView):
     template_name = 'runs.html'    
     
-  
         
     def get(self, request, *args, **kwargs):
         
@@ -232,8 +238,61 @@ class RunView(RunAuthenticatingView, TemplateView):
         context_data.update({
             'run': self.run,
             'instructions': self.run.instructions.all().order_by('sequence_no'),
-            'containers': self.run.containers.all(),
+            'run_containers': self.run.run_containers.all().order_by('id'),
             'project': self.project,
+        })
+        
+        return context_data   
+    
+class ContainerListView(OrganizationAuthenticatingView,ListView):
+    model = Project
+    template_name = 'containers.html'    
+    paginate_by = 11
+    context_object_name = 'containers'
+    
+    def get_queryset(self):
+        
+        return Container.objects.filter(organization__subdomain=self.kwargs['organization_subdomain'])\
+               .order_by('id')
+    
+    
+class ContainerAuthenticatingView(OrganizationAuthenticatingView):
+    def authenticate(self, request):
+    
+        if not super(ContainerAuthenticatingView, self).authenticate(request):
+            return False
+    
+        container_query = Container.objects.filter(id=self.kwargs['container_id'],
+                                             organization__subdomain=self.kwargs['organization_subdomain'])
+    
+        if not container_query.exists():
+            messages.add_message(self.request, messages.WARNING, 
+                                 'Invalid contianer/org combo')
+    
+            return False
+    
+        self.container = container_query.first()
+    
+        return True   
+    
+class ContainerView(ContainerAuthenticatingView, TemplateView):
+    template_name = 'container.html'    
+
+    def get_context_data(self, *args, **kwargs):
+    
+        context_data = super(ContainerAuthenticatingView, self).get_context_data(*args, **kwargs)    
+    
+        context_data.update({
+            'metadata': OrderedDict([
+                ('Type', self.container.container_type_id),
+                ('ID', self.container.id),
+                ('Desired Storage Temp', self.container.storage_condition),
+                ('Expires At', self.container.expires_at),
+                ('Barcode', self.container.barcode) 
+            ]),
+            'container': self.container,
+            'runs': self.container.runs.all().order_by('-id'),
+            'aliquots': self.container.aliquots.all().order_by('well_idx')
         })
         
         return context_data   

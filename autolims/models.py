@@ -376,7 +376,12 @@ class Container(models.Model):
             num_rows = self.row_count
             start = col * num_rows + row      
             
+    
         return range(start,start + num)
+    
+    def get_absolute_url(self):
+        return "/%s/containers/%s"%(self.organization.subdomain,
+                                  self.id)    
     
     def get_column_well_indexes(self, column_index_or_indexes):
             
@@ -441,7 +446,7 @@ class Container(models.Model):
         super(Container, self).save(*args, **kwargs)
     
     def __str__(self):
-        return self.label if self.label else 'Container %s'%self.id 
+        return '%s (%s)'%(self.label,self.id) if self.label else 'Container %s'%self.id 
 
 @python_2_unicode_compatible
 class Aliquot(models.Model):
@@ -472,6 +477,14 @@ class Aliquot(models.Model):
     #custom fields
     updated_at = models.DateTimeField(auto_now=True)    
     
+    @property
+    def human_index(self):
+        
+        container_type = _CONTAINER_TYPES[self.container.container_type_id]
+        
+        
+        return container_type.humanize(self.well_idx)
+        
     def add_volume(self, volume_to_add):
         """
         Handles volume strings, e.g. '5:nanoliter'

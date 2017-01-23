@@ -36,10 +36,7 @@
           </h4>
         </div>
         <div id="collapse{{instruction.sequence_no}}" class="panel-collapse collapse">
-          <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-          commodo consequat.</div>
+          <div class="panel-body">{% include 'instruction.html' with instruction=instruction %}</div>
         </div>
       </div>
       
@@ -59,26 +56,29 @@
 
 <div class="col-md-2">
   
+  
   <ul class="nav nav-pills nav-stacked">
-      <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
-  <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
-  <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+  
+      {% for run_container in run_containers %}
+  
+    <li {% if forloop.counter0 == 0 %} class="active" {% endif %}><a data-toggle="pill" href="#container{{run_container.id}}">{{ run_container.container_label}}</a></li>
+    
+      {% endfor %}    
+
   </ul>
   </div>
 
 <div class="tab-content col-md-10">
-  <div id="home" class="tab-pane fade in active">
-    <h3>HOME</h3>
-    <p>Some content.</p>
+
+   {% for run_container in run_containers %}
+
+  <div id="container{{run_container.id}}" class="tab-pane fade {% if forloop.counter0 == 0 %} in active {% endif %}">
+    
+    {% include 'container_quickview.html' with run_container=run_container %}
   </div>
-  <div id="menu1" class="tab-pane fade">
-    <h3>Menu 1</h3>
-    <p>Some content in menu 1.</p>
-  </div>
-  <div id="menu2" class="tab-pane fade">
-    <h3>Menu 2</h3>
-    <p>Some content in menu 2.</p>
-  </div>
+  
+   {% endfor %}      
+  
 </div>
 
 </div>
@@ -99,7 +99,7 @@ $('.close_all_accordion').click(function(){
     .collapse('hide');
 });
 $('.open_all_accordion').click(function(){
-  $('.panel-collapse:not(".in")')
+  $('.panel-collapse')
     .collapse('show');
 });
 

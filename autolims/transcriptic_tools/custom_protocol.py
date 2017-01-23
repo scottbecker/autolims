@@ -3326,8 +3326,41 @@ class CustomProtocol(Protocol):
             #minipreping uses all available volume
             sources[i].volume = get_well_dead_volume(sources[i])
         
+
+    def create_resource_dilution(self, reagent, 
+                                 reagent_concentration, 
+                                 goal_concentration,
+                                 dilutant_volume,
+                                 destination_well = None,
+                                 dilutent = Reagent.te):
         
-    def pcr(self, template_well, primer1_well, primer2_well,
+        assert isinstance(reagent,Reagent)
+        
+        well_name = '%s diluted to %s'%(reagent.name,goal_concentration)
+        
+        if not destination_well:
+            destination_well = self.ref(well_name, cont_type="micro-1.5", discard=True).well(0)
+        
+        destination_well.name = well_name
+        
+        diluent_volume = get_diluent_volume(reagent_concentration, 
+                                            dilutant_volume, 
+                                            goal_concentration)
+
+        self.provision_by_name(dilutent, destination_well, dilutant_volume)
+
+        #mix required for small volumes
+        self.provision_by_name(reagent, 
+                               destination_well, 
+                               diluent_volume, 
+                               mix_after=True)        
+        
+        destination_well.properties['Concentration'] = str(goal_concentration)
+        
+        return destination_well
+        
+        
+    def pcr(self, template_well, primer1_well_or_reagent, primer2_well_or_reagent,
             annealing_temp_c, greater_than_65_percent_gc_primer,
             product_length,
             product_name='pcr product',
@@ -3350,14 +3383,49 @@ class CustomProtocol(Protocol):
         if product_length>20*1000:
             raise Exception('Q5 polymerase is not appropriate for PCR products more than 20kb')
         
-        oligo_wells = [primer1_well,primer2_well]
+             
         
-        assert all([well.properties.get('Concentration') != None for well in oligo_wells]), 'All oligos must have a Concentration property'
         
+       
         # Temporary tubes for use, then discarded (you can't set storage if you are going to discard)
         mastermix_well = self.ref("mastermix", cont_type="micro-1.5", discard=True).well(0)
         pcr_plate =      self.ref("%s_pcr_plate"%product_name, cont_type="96-pcr", storage=Temperature.cold_4 if not discard_pcr_plate else None,
                                   discard = discard_pcr_plate)
+        
+        #------- Provision primer reagents as needed
+        
+        if isinstance(primer1_well_or_reagent,Reagent):
+            destination_well = pcr_plate.well('D1')
+            self.create_resource_dilution(primer1_well_or_reagent, uM(100), 
+                                          uM(10), 
+                                          ul(27),
+                                          destination_well=destination_well)
+            
+            primer1_well = destination_well
+            
+        else:
+            primer1_well = primer1_well_or_reagent
+            init_inventory_well(primer1_well)
+    
+        if isinstance(primer2_well_or_reagent,Reagent):
+            destination_well = pcr_plate.well('D2')
+            self.create_resource_dilution(primer2_well_or_reagent, uM(100), 
+                                          uM(10), 
+                                          ul(27),
+                                          destination_well=destination_well)
+
+            primer2_well = destination_well
+
+        else:
+            primer2_well = primer2_well_or_reagent    
+            init_inventory_well(primer2_well)
+            
+        #-------
+        
+        oligo_wells = [primer1_well,primer2_well]
+    
+        assert all([well.properties.get('Concentration') != None for well in oligo_wells]), 'All oligos must have a Concentration property'
+        
         
         
         experimental_pcr_well = pcr_plate.wells(["A1"])[0]
@@ -3372,10 +3440,10 @@ class CustomProtocol(Protocol):
             pcr_wells.append(negative_control_well)
 
         # Initialize all existing inventory
-        all_inventory_wells = [template_well, primer1_well, primer2_well]
+        all_inventory_wells = [template_well]
         for well in all_inventory_wells:
             init_inventory_well(well)
-            
+        
             
         #convert primer wells to 10uM
         
@@ -3452,7 +3520,9 @@ class CustomProtocol(Protocol):
         
         # Finally add template
         #@TODO: update this to be more intelligent about the dna concentration of the source well
-        self.transfer(template_well,  experimental_pcr_well, ul(1), mix_after=True)
+        self.transfer(template_well,  experimental_pcr_well, ul(1), 
+                      mix_before=True,
+                      mix_after=True)
         
         if negative_control:
             self.provision_by_name(Reagent.water, negative_control_well, ul(1))

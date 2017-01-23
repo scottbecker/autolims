@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}
+
+
+<a href="{% url 'containers' organization_subdomain=organization_subdomain %}">Containers</a>
+         > 
+<a href='{{ container.get_absolute_url }}'>{{container.label}}</a>
+
+{% endblock %}
+
+{% block content %}
+
+    <div>
+    <h2>Metadata</h2>
+    <dl class="dl-horizontal">
+       {% for key,value in metadata.items %}
+      <dt>{{key}}</dt>
+      <dd>{{value}}</dd>
+      
+      {% endfor %}
+    </dl>
+    </div>
+    
+    <div>
+        
+    <h2>Aliquots (aka Wells)</h2>
+    <table class="table table-bordered table-hover" >
+    <thead >
+    <tr>
+        <th>Human Index</th>
+        <th>Robot Index</th>
+        <th>Name</th>
+        <th>Volume (uL)</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        {% for aq in aliquots %}
+        <tr>
+            <td>{{aq.human_index}}</td>
+            <td>{{aq.well_idx}}</td>
+            <td>{{aq.name}}</td>
+            <td>{{aq.volume_ul}}</td>
+        </tr>
+        {% endfor %}
+    
+    </tbody>
+    </table>
+    
+    
+    </div>
+        
+    
+    
+{% endblock %}
+
+
+{% block extra_js %}
+
+{{ block.super }}
+
+$('.close_all_accordion').click(function(){
+  $('.panel-collapse.in')
+    .collapse('hide');
+});
+$('.open_all_accordion').click(function(){
+  $('.panel-collapse')
+    .collapse('show');
+});
+
+{% endblock %}  
