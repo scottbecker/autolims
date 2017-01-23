@@ -26,7 +26,6 @@ TEMPERATURE_NAMES = [temp.name for temp in Temperature]
 
 RUN_STATUS_CHOICES = ['accepted','in_progress','complete','aborted','canceled']
 
-
 ALIQUOT_EFFECT_TYPES = ['liquid_transfer_in','liquid_transfer_out','instructions']
 
 DATA_TYPES = ['image_plate','platereader','measure']
@@ -196,6 +195,9 @@ class Run(models.Model):
         if not isinstance(self.properties,dict):
             self.properties = {}
             
+        assert self.status in RUN_STATUS_CHOICES,\
+            'status \'%s\' not found in allowed options %s'%str(RUN_STATUS_CHOICES)
+                
         super(Run, self).save(*args, **kw)
         
         #only hit if this is a new Run

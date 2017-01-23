@@ -11,7 +11,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.conf import settings
+from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
+
+from autoprotocol_interpreter import execute_run
 
 
 
@@ -243,6 +246,38 @@ class RunView(RunAuthenticatingView, TemplateView):
         })
         
         return context_data   
+    
+class ExecuteRunView(RunAuthenticatingView):
+    
+    def post(self, request, *args, **kwargs):
+        execute_run(self.run)
+        messages.add_message(self.request, messages.INFO, 
+                     'Run Executed Successfully')
+        return redirect(self.run.get_absolute_url())   
+        
+class CancelRunView(RunAuthenticatingView):
+    
+    def post(self, request, *args, **kwargs):
+        
+        #ensure that the run is accepted
+        assert self.run.status=='accepted','Run must be in accepted state to cancel'
+        
+        self.run.status = 'canceled'
+        self.run.save()
+        messages.add_message(self.request, messages.INFO, 
+                     'Run Canceled')
+        return redirect(self.run.get_absolute_url())   
+    
+class AbortRunView(RunAuthenticatingView):
+    def post(self, request, *args, **kwargs):
+        #ensure that the run is accepted
+        assert self.run.status=='in_progress','Run must be in_progress state to abort'
+        self.run.status = 'aborted'
+        self.run.save()        
+        messages.add_message(self.request, messages.INFO, 
+                     'Run Aborted')
+        return redirect(self.run.get_absolute_url())   
+
     
 class ContainerListView(OrganizationAuthenticatingView,ListView):
     model = Project

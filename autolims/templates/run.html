@@ -11,21 +11,34 @@
 
 {% block content %}
     
+
+<div class="row">
+<span style='display:inline'>Submitted by {{run.owner.username}} on {{run.created_at}}</span>
+<h2 class='pull-right'><span class="label label-default">{{run.status}}</span></h2>
+</div>
     
 <div class="row">
 
 {% if run.status == 'accepted' %}
   <form style='display:inline' method="POST" action="{{request.path}}/cancel/">
+    {% csrf_token %}
     <button type="submit" class="btn btn-danger">Cancel Run</button>
   </form>  
   <form style='display:inline' method="POST" action="{{request.path}}/execute/">
+    {% csrf_token %}
     <button type="submit" class="btn btn-success">Execute Run</button>
   </form>
 
 {% elif run.status == 'in_progress' %}
   <form style='display:inline' method="POST" action="{{request.path}}/abort/">
+    {% csrf_token %}
     <button type="submit" class="btn btn-danger">Abort</button>
   </form>  
+  
+{% elif run.status == 'complete' %}
+
+   Completed on {{run.completed_at}}
+  
 {% endif %}
 
 

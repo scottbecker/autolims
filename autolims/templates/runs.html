@@ -10,14 +10,16 @@
     <table class="table table-bordered table-hover" >
     <thead >
     <tr>
-        <th>Name</th>
+        <th class="col-md-10">Name</th>
+        <th class="col-md-2">Status</th>
     </tr>
     </thead>
     <tbody>
     
         {% for run in section.runs %}
         <tr role="button" class='clickable-row' data-href='{{ run.get_absolute_url }}'>
-            <td>{{ run }}</td>
+            <td >{{ run }}</td>
+            <td >{{run.status}}</td>
         </tr>
         {% endfor %}
     
