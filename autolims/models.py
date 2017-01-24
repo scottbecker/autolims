@@ -49,7 +49,10 @@ class Organization(models.Model):
                                  unique=True,
                                  db_index=True)
     
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(User,
+                                   related_name='organizations',
+                                   related_query_name='orgnization',
+                                   db_constraint=True)
     
     deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)    

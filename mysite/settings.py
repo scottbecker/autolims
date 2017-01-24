@@ -147,6 +147,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'autolims.serializers.PageNumberPaginationDataOnly',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'autolims.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     )
     
 }
+
+
+AUTHENTICATION_BACKENDS = ['autolims.authentication.EmailBackend',
+                           'django.contrib.auth.backends.ModelBackend']

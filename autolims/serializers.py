@@ -8,7 +8,8 @@ from rest_framework.pagination import PageNumberPagination
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'groups')
+        depth=1
+        fields = ('url', 'username', 'email','organizations')
 
 
 class GroupSerializer(serializers.ModelSerializer):
