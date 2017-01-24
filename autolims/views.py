@@ -55,19 +55,15 @@ class HomePageView(View):
                                 kwargs={'organization_subdomain':organization.subdomain}))
 
 
-#class OrgAuthenticatingListView(ListView):
-    
-
-@method_decorator(login_required, name='dispatch')
 class AuthenticatingView(View):
     
     def authenticate(self, request):
         return True
     
-    def dispatch(self, *args, **kwargs):
-        if not self.authenticate(self.request):
+    def dispatch(self,request,*args, **kwargs):
+        if '/api/' not in request.path and not self.authenticate(request):
             return redirect('%s?next=%s' % (settings.LOGIN_URL, self.request.path))    
-        return super(AuthenticatingView, self).dispatch(*args, **kwargs)  
+        return super(AuthenticatingView, self).dispatch(request, *args, **kwargs)  
     
 
 class OrganizationAuthenticatingView(AuthenticatingView):
@@ -109,7 +105,7 @@ class OrganizationAuthenticatingView(AuthenticatingView):
         return context_data       
     
     
-        
+@method_decorator(login_required, name='dispatch')        
 class ProjectListView(OrganizationAuthenticatingView,ListView):
     model = Project
     template_name = 'projects.html'    
@@ -140,7 +136,8 @@ class ProjectAuthenticatingView(OrganizationAuthenticatingView):
         self.project = project_query.first()
     
         return True
-    
+
+@method_decorator(login_required, name='dispatch')    
 class RunListView(ProjectAuthenticatingView, TemplateView):
     template_name = 'runs.html'    
     
@@ -224,7 +221,7 @@ class RunAuthenticatingView(ProjectAuthenticatingView):
     
         return True    
     
-    
+@method_decorator(login_required, name='dispatch')    
 class RunView(RunAuthenticatingView, TemplateView):
     template_name = 'run.html'    
 
@@ -240,7 +237,8 @@ class RunView(RunAuthenticatingView, TemplateView):
         })
         
         return context_data   
-    
+
+@method_decorator(login_required, name='dispatch')    
 class ExecuteRunView(RunAuthenticatingView):
     
     def post(self, request, *args, **kwargs):
@@ -248,7 +246,8 @@ class ExecuteRunView(RunAuthenticatingView):
         messages.add_message(self.request, messages.INFO, 
                      'Run Executed Successfully')
         return redirect(self.run.get_absolute_url())   
-        
+
+@method_decorator(login_required, name='dispatch')        
 class CancelRunView(RunAuthenticatingView):
     
     def post(self, request, *args, **kwargs):
@@ -261,7 +260,8 @@ class CancelRunView(RunAuthenticatingView):
         messages.add_message(self.request, messages.INFO, 
                      'Run Canceled')
         return redirect(self.run.get_absolute_url())   
-    
+
+@method_decorator(login_required, name='dispatch')    
 class AbortRunView(RunAuthenticatingView):
     def post(self, request, *args, **kwargs):
         #ensure that the run is accepted
@@ -272,6 +272,7 @@ class AbortRunView(RunAuthenticatingView):
                      'Run Aborted')
         return redirect(self.run.get_absolute_url())   
 
+@method_decorator(login_required, name='dispatch')
 class StartProgressOnRunView(RunAuthenticatingView):
     def post(self, request, *args, **kwargs):
         #ensure that the run is accepted
@@ -283,7 +284,7 @@ class StartProgressOnRunView(RunAuthenticatingView):
         return redirect(self.run.get_absolute_url())   
     
     
-    
+@method_decorator(login_required, name='dispatch')    
 class ContainerListView(OrganizationAuthenticatingView,ListView):
     model = Project
     template_name = 'containers.html'    
@@ -314,7 +315,8 @@ class ContainerAuthenticatingView(OrganizationAuthenticatingView):
         self.container = container_query.first()
     
         return True   
-    
+
+@method_decorator(login_required, name='dispatch')    
 class ContainerView(ContainerAuthenticatingView, TemplateView):
     template_name = 'container.html'    
 
@@ -373,9 +375,10 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
     serializer_class = serializers.OrganizationSerializer
     
-class OrganizationFromNameView(OrganizationAuthenticatingView):
+class OrganizationFromNameView(OrganizationAuthenticatingView,viewsets.GenericViewSet):
     
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        self.request = request
         if not self.authenticate(request):
             org_id = -1
         else:
@@ -383,12 +386,22 @@ class OrganizationFromNameView(OrganizationAuthenticatingView):
         view_info = resolve("/api/organizations/%s/"%org_id)
         return view_info.func(request, **view_info.kwargs)        
          
-class ProjectFromNameAPIView(ProjectAuthenticatingView):
+class ProjectFromOrganizationNameAPIView(ProjectAuthenticatingView,RunViewSet):
     
-    def dispatch(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
+        
         if not self.authenticate(request):
             project_id = -1
         else:
             project_id = self.project.id
-        view_info = resolve("/api/runs/%s/"%project_id)
-        return view_info.func(request, **view_info.kwargs)         
+            
+        #request it once loads self._data
+        request._load_data_and_files()
+
+        request._data['project'] = project_id
+        request._data['owner'] = request.user.id
+        
+        resp =  super(ProjectFromOrganizationNameAPIView, self).create(request, *args, **kwargs)   
+        
+        import pdb
+        pdb.set_trace()

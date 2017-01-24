@@ -13,6 +13,13 @@ from transcriptic_tools.utils import round_volume
 from db_file_storage.model_utils import delete_file, delete_file_if_needed
 
 
+#create token imports
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.conf import settings
+
+
 COVER_TYPES = set()
     
 for container_type in _CONTAINER_TYPES.values():
@@ -731,4 +738,9 @@ class Resource(models.Model):
     
 
     
-    
+# This code is triggered whenever a new user has been created and saved to the database
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

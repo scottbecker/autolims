@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'db_file_storage',
     'rest_framework',
     'bootstrap3',
+    'rest_framework.authtoken'
     
 ]
 
@@ -79,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mysite.wsgi.application'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-
+LOGOUT_REDIRECT_URL = '/login/'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -143,6 +144,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     
     
-    'DEFAULT_PAGINATION_CLASS': 'autolims.serializers.PageNumberPaginationDataOnly'
+    'DEFAULT_PAGINATION_CLASS': 'autolims.serializers.PageNumberPaginationDataOnly',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'autolims.authentication.TokenAuthentication',
+    )
     
 }

@@ -5,22 +5,22 @@ from rest_framework.response import Response
 
 from rest_framework.pagination import PageNumberPagination
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'groups')
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
         
     
-class RunSerializer(serializers.HyperlinkedModelSerializer):
+class RunSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
-        fields = ('url', 'title')
+        fields = ('id','url', 'title', 'owner','project','protocol')
         
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,7 +32,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Run
         depth=0
-        fields = ('title', 'status','projects')        
+        fields = ('id','title', 'status','projects')        
         
         
         
