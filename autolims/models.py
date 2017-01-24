@@ -114,7 +114,7 @@ class Run(models.Model):
                           choices=zip(RUN_STATUS_CHOICES,
                                       RUN_STATUS_CHOICES),
                           null=False,
-                          default='available',
+                          default='accepted',
                           blank=False)
 
     test_mode = models.BooleanField(blank=False,default=False)
@@ -138,7 +138,7 @@ class Run(models.Model):
     properties = JSONField(null=True,blank=True,
                            default=dict)   
     
-    autoprotocol = JSONField(null=True,blank=True) 
+    protocol = JSONField(null=True,blank=True) 
     
     #we don't know what issued means
 
@@ -182,7 +182,7 @@ class Run(models.Model):
         
         if self.id is not None:
             orig_run = Run.objects.get(id=self.id)
-            if orig_run.autoprotocol != self.autoprotocol:
+            if orig_run.protocol != self.protocol:
                 raise Exception, "unable to edit autoprotocol on a run"
             
             if not self.title:
@@ -196,7 +196,7 @@ class Run(models.Model):
             self.properties = {}
             
         assert self.status in RUN_STATUS_CHOICES,\
-            'status \'%s\' not found in allowed options %s'%str(RUN_STATUS_CHOICES)
+            'status \'%s\' not found in allowed options %s'%(self.status, str(RUN_STATUS_CHOICES))
                 
         super(Run, self).save(*args, **kw)
         
@@ -213,7 +213,7 @@ class Run(models.Model):
             self.populate_containers()            
     
     def create_instructions(self):
-        for i, instruction_dict in enumerate(self.autoprotocol['instructions']):
+        for i, instruction_dict in enumerate(self.protocol['instructions']):
             instruction = Instruction.objects.create(run = self,
                                                      operation = instruction_dict,
                                                      sequence_no = i)
@@ -222,7 +222,7 @@ class Run(models.Model):
         
         organization = self.project.organization
         
-        for label, ref_dict in self.autoprotocol['refs'].items():
+        for label, ref_dict in self.protocol['refs'].items():
             if 'new' in ref_dict:
                 
                 storage_condition = ref_dict['store']['where'] if 'store' in ref_dict else None

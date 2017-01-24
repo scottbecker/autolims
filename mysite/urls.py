@@ -19,19 +19,13 @@ from django.contrib.auth import views as auth_views
 
 #django rest includes
 from django.conf.urls import url, include
-from rest_framework import routers
-from autolims import views
 
 
 
-
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     url(r'', include('autolims.urls')),
-    url(r'^api/', include(router.urls)),
+
     url(r'^admin/', admin.site.urls),
     url(r'^files/', include('db_file_storage.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),

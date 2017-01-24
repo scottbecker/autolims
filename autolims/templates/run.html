@@ -23,13 +23,18 @@
   <form style='display:inline' method="POST" action="{{request.path}}/cancel/">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Cancel Run</button>
+  </form> 
+  <form style='display:inline' method="POST" action="{{request.path}}/start_progress/">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Mark In-Progress</button>
   </form>  
   <form style='display:inline' method="POST" action="{{request.path}}/execute/">
     {% csrf_token %}
-    <button type="submit" class="btn btn-success">Execute Run</button>
+    <button type="submit" class="btn btn-success">Mark Complete (Execute Run)</button>
   </form>
 
 {% elif run.status == 'in_progress' %}
+
   <form style='display:inline' method="POST" action="{{request.path}}/abort/">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Abort</button>

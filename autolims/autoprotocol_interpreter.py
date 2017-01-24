@@ -298,7 +298,7 @@ def execute_run(run):
     #update properties and names of aliquots (see outs of autoprotocol)
   
     
-    for container_label, out_info in run.autoprotocol.get('outs',{}).items():
+    for container_label, out_info in run.protocol.get('outs',{}).items():
         
         for well_idx_str, well_info in out_info.items():
             aq = get_or_create_aliquot_from_path(run.id, '%s/%s'%(container_label,
@@ -319,7 +319,7 @@ def execute_run(run):
                 
     
     #discard containers
-    for container_label, ref_info in run.autoprotocol['refs'].items():
+    for container_label, ref_info in run.protocol['refs'].items():
 
         if ref_info.get('discard'):
         

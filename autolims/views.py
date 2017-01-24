@@ -2,8 +2,7 @@ from collections import OrderedDict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, serializers
-from serializers import UserSerializer, GroupSerializer
+
 from django.http import HttpResponse
 from django.views.generic.base import TemplateView, View
 from django.views.generic import ListView
@@ -16,25 +15,21 @@ from django.core.urlresolvers import reverse
 
 from autoprotocol_interpreter import execute_run
 
-
-
 from models import Project, Organization, Run, Container
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+#---- import for api ----- 
+from rest_framework import viewsets
+import serializers
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from django.core.urlresolvers import resolve
+from rest_framework.views import PermissionDenied
     
+# ----------------------------
+# ------- Web Views ----------
+# ----------------------------
+
 @login_required
 def index(request):
     return HttpResponse("Hello world")
@@ -94,7 +89,6 @@ class OrganizationAuthenticatingView(AuthenticatingView):
         
     
     def get_valid_current_org(self):
-        
         org_query = Organization.objects.filter(subdomain=self.kwargs['organization_subdomain'])
         
         if not self.request.user.is_superuser: 
@@ -278,6 +272,17 @@ class AbortRunView(RunAuthenticatingView):
                      'Run Aborted')
         return redirect(self.run.get_absolute_url())   
 
+class StartProgressOnRunView(RunAuthenticatingView):
+    def post(self, request, *args, **kwargs):
+        #ensure that the run is accepted
+        assert self.run.status=='accepted','Run must be accepted state to start progress'
+        self.run.status = 'in_progress'
+        self.run.save()        
+        messages.add_message(self.request, messages.INFO, 
+                     'Run Started')
+        return redirect(self.run.get_absolute_url())   
+    
+    
     
 class ContainerListView(OrganizationAuthenticatingView,ListView):
     model = Project
@@ -331,3 +336,59 @@ class ContainerView(ContainerAuthenticatingView, TemplateView):
         })
         
         return context_data   
+    
+    
+
+# ----------------------------
+# ----- API Views ------------
+# ----------------------------
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = serializers.UserSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = serializers.GroupSerializer
+    
+class RunViewSet(viewsets.ModelViewSet):
+    queryset = Run.objects.all()
+    serializer_class = serializers.RunSerializer
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super(RunViewSet, self).dispatch(request, *args, **kwargs)
+    
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = serializers.ProjectSerializer
+    
+class OrganizationViewSet(viewsets.ModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = serializers.OrganizationSerializer
+    
+class OrganizationFromNameView(OrganizationAuthenticatingView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.authenticate(request):
+            org_id = -1
+        else:
+            org_id = self.organization.id
+        view_info = resolve("/api/organizations/%s/"%org_id)
+        return view_info.func(request, **view_info.kwargs)        
+         
+class ProjectFromNameAPIView(ProjectAuthenticatingView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not self.authenticate(request):
+            project_id = -1
+        else:
+            project_id = self.project.id
+        view_info = resolve("/api/runs/%s/"%project_id)
+        return view_info.func(request, **view_info.kwargs)         

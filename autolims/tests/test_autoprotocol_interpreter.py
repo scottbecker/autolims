@@ -36,11 +36,11 @@ class AutoprotocolInterpreterTestCase(TestCase):
         
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19u4jkqxhbt8
         with open(os.path.join(os.path.dirname(__file__),'data','oligosynthesis.json')) as f:
-            autoprotocol = json.loads(f.read())
+            protocol = json.loads(f.read())
         
         run = Run.objects.create(title='Real Run',
                                  test_mode=False,
-                                 autoprotocol=autoprotocol,
+                                 protocol=protocol,
                                  project = self.project,
                                  owner=self.user)
         assert isinstance(run, Run)
@@ -64,7 +64,7 @@ class AutoprotocolInterpreterTestCase(TestCase):
             self.assertDictContainsSubset({
                 #created by the oligosynthesis command
                 'sequence':'CCAGCTCGTTGAGTTTCTCC',
-                #this really should be 25:nm but autoprotocol has it wrong and its a hassle to change
+                #this really should be 25:nm but protocol has it wrong and its a hassle to change
                 'scale':'25nm',
                 #created by the out
                 'Concentration': '100uM',
@@ -117,15 +117,15 @@ class AutoprotocolInterpreterTestCase(TestCase):
             
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19uqqkmr5u8f
         with open(os.path.join(os.path.dirname(__file__),'data','pellet_bacteria.json')) as f:
-            autoprotocol = json.loads(f.read())             
+            protocol = json.loads(f.read())             
 
-        #update the autoprotocol to reference the correct id post import
+        #update the protocol to reference the correct id post import
 
-        autoprotocol['refs']['bacteria_tube']['id'] = existing_container.id
+        protocol['refs']['bacteria_tube']['id'] = existing_container.id
 
         run = Run.objects.create(title='Real Run',
                                  test_mode=False,
-                                 autoprotocol=autoprotocol,
+                                 protocol=protocol,
                                  project = self.project,
                                  owner=self.user)
         assert isinstance(run, Run)
@@ -165,11 +165,11 @@ class AutoprotocolInterpreterTestCase(TestCase):
     
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19uvbk55tb54
         with open(os.path.join(os.path.dirname(__file__),'data','pipette_operations.json')) as f:
-            autoprotocol = json.loads(f.read())             
+            protocol = json.loads(f.read())             
     
         run = Run.objects.create(title='Pipette Operation Run',
                                  test_mode=False,
-                                 autoprotocol=autoprotocol,
+                                 protocol=protocol,
                                  project = self.project,
                                  owner=self.user)
         assert isinstance(run, Run)
