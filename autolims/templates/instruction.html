@@ -1,1 +1,16 @@
-Instruction goes here
+{% load run_tags %} 
+
+Instruction goes here for instruction {{instruction.id}} <br />
+
+{% if instruction.operation.op == 'oligosynthesize' %}
+
+{% for oligo in instruction.operation.oligos %}
+
+<a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{oligo.destination|aliquot_to_container_label}}'>details</a>
+
+
+
+{% endfor %}
+
+{% endif %}
+

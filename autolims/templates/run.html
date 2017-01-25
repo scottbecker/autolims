@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
-
+{% load run_tags %} 
+{% load debug_tags %} 
 {% block title %}
 
 <a href='{{ project.get_absolute_url }}'>{{project.name}}</a> > 
@@ -62,9 +63,9 @@
     
     <div class="panel-group" id="accordion">
     
-    
+       
       {% for instruction in instructions %}
-    
+ 
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
@@ -94,18 +95,18 @@
         
             {% for run_container in run_containers %}
         
-          <li {% if forloop.counter0 == 0 %} class="active" {% endif %}><a data-toggle="pill" href="#container{{run_container.id}}">{{ run_container.container_label}}</a></li>
+          <li class="container-pill {% if forloop.counter0 == 0 %} active {% endif %}"><a data-toggle="pill" href="#c_{{run_container.container_label|to_safe_label}}">{{ run_container.container_label}}</a></li>
           
             {% endfor %}    
       
         </ul>
       </div>
 
-      <div class="tab-content col-md-8">
+      <div id='mytabs' class="tab-content col-md-8">
 
         {% for run_container in run_containers %}
      
-          <div id="container{{run_container.id}}" class="tab-pane fade {% if forloop.counter0 == 0 %} in active {% endif %}">
+          <div id="c_{{run_container.container_label|to_safe_label}}" class="tab-pane fade {% if forloop.counter0 == 0 %} in active {% endif %}">
             
             {% include 'container_quickview.html' with run_container=run_container %}
             
@@ -135,9 +136,20 @@ $('.close_all_accordion').click(function(){
   $('.panel-collapse.in')
     .collapse('hide');
 });
+
 $('.open_all_accordion').click(function(){
   $('.panel-collapse')
     .collapse('show');
 });
+
+$(function(){
+    $('.secondary-pill-toggle').click(function(e){
+        e.preventDefault();
+        $('.container-pill').removeClass('active');
+        console.log(e);
+    })
+
+})
+
 
 {% endblock %}  

@@ -48,9 +48,11 @@ INSTALLED_APPS = [
     'db_file_storage',
     'rest_framework',
     'bootstrap3',
-    'rest_framework.authtoken'
-    
+    'rest_framework.authtoken',
+    'template_debug'
 ]
+
+TEMPLATE_DEBUG = True
 
 DEFAULT_FILE_STORAGE = 'db_file_storage.storage.DatabaseFileStorage'
 
@@ -73,6 +75,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'libraries': {'myapp_tags': 'autolims.templatetags.run_tags'},
             'debug': True,
             'context_processors': [
                 'django.template.context_processors.debug',
