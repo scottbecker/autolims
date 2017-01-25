@@ -21,7 +21,7 @@ import sys
 import numpy
 import os
 import requests
-from ..lib import round_up
+from lib import round_up
 from requests.packages.urllib3.exceptions import InsecureRequestWarning, InsecurePlatformWarning, SNIMissingWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 requests.packages.urllib3.disable_warnings(SNIMissingWarning)
