@@ -11,7 +11,7 @@ if __name__ == "__main__":
     print sys.path
     print os.path.dirname(os.path.realpath(__file__))
     
-    files = [f for f in os.listdir('.') if os.path.isfile(f)]
+    files = [f for f in os.listdir('.') ]
     for f in files:    
         print f    
     from lib import round_up    
