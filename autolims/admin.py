@@ -8,7 +8,7 @@ class RunAdmin(admin.ModelAdmin):
     #autoprotocol can only be set on creation
     def get_readonly_fields(self, request, obj=None):
         if obj is not None:
-            return ['autoprotocol']
+            return ['protocol']
         return []    
     
     
