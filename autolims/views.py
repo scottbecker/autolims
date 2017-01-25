@@ -401,7 +401,5 @@ class ProjectFromOrganizationNameAPIView(ProjectAuthenticatingView,RunViewSet):
         request._data['project'] = project_id
         request._data['owner'] = request.user.id
         
-        resp =  super(ProjectFromOrganizationNameAPIView, self).create(request, *args, **kwargs)   
-        
-        import pdb
-        pdb.set_trace()
+        return super(ProjectFromOrganizationNameAPIView, self).create(request, *args, **kwargs)   
+     

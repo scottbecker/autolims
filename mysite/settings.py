@@ -96,9 +96,9 @@ LOGOUT_REDIRECT_URL = '/login/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'autolims',
-        'USER': 'autolims_user', 
-        'PASSWORD': 'qW9yJQmYpBjsfhPt',
+        'NAME': 'mylocaldb',
+        'USER': 'scott', 
+        'PASSWORD': 'none',
         'HOST': 'scott-vm',
         'PORT': '',
     }
@@ -159,7 +159,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-        'rest_framework.permissions.IsAdminUser'
+        #'rest_framework.permissions.IsAdminUser'
+        'rest_framework.permissions.AllowAny'
     ],
     'PAGE_SIZE': 10,
     
