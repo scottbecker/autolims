@@ -9,6 +9,7 @@ if __name__ == "__main__":
     sys.path.append("./autolims")
     
     print sys.path
+    print os.path.dirname(os.path.realpath(__file__))
     
     from lib import round_up    
 
