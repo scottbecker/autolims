@@ -3,26 +3,9 @@ import os
 import sys
 
 
-
 if __name__ == "__main__":
     
     sys.path.append("./autolims")
-    
-    print sys.path
-    print os.path.dirname(os.path.realpath(__file__))
-    
-    files = [f for f in os.listdir('.') ]
-    for f in files:    
-        print f    
-        
-    files = [f for f in os.listdir('./autolims/lib') ]
-    for f in files:    
-        print f        
-            
-    import autolims
-    import autolims.lib
-    from lib import round_up    
-
     
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
     try:
