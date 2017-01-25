@@ -14,6 +14,13 @@ if __name__ == "__main__":
     files = [f for f in os.listdir('.') ]
     for f in files:    
         print f    
+        
+    files = [f for f in os.listdir('./autolims/lib') ]
+    for f in files:    
+        print f        
+            
+    import autolims
+    import autolims.lib
     from lib import round_up    
 
     
