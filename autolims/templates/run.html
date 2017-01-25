@@ -146,9 +146,9 @@ $(function(){
     $('.secondary-pill-toggle').click(function(e){
         e.preventDefault();
         $('.container-pill').removeClass('active');
-        console.log(e);
+        href = e.target.getAttribute('href');
+        $('li').has('a[href="'+href+'"]').addClass('active');
     })
-
 })
 
 
