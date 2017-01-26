@@ -69,12 +69,12 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{instruction.sequence_no}}">
+            <a id='a{{instruction.sequence_no}}' data-toggle="collapse" href="#collapse{{instruction.sequence_no}}">
             {{instruction.operation.op}}</a>
           </h4>
         </div>
         <div id="collapse{{instruction.sequence_no}}" class="panel-collapse collapse">
-          <div class="panel-body">{% include 'instruction.html' with instruction=instruction %}</div>
+          <div id='pb{{instruction.sequence_no}}' class="panel-body">{% include 'instruction.html' with instruction=instruction %}</div>
         </div>
       </div>
       
@@ -138,7 +138,7 @@ $('.close_all_accordion').click(function(){
 });
 
 $('.open_all_accordion').click(function(){
-  $('.panel-collapse')
+  $('.panel-collapse:not(".in")')
     .collapse('show');
 });
 
