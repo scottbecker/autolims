@@ -74,6 +74,59 @@ def execute_gel_separate(instruction):
 def execute_magnetic_transfer(instruction):
     raise NotImplementedError
 
+
+
+def simplify_pipette_operations(pipette_group):
+    #each group can only have one key
+
+    #check this assumption
+
+    if len(pipette_group.keys())!=1:
+        raise NotImplementedError, "We aren't ready for groups to have multiple keys."
+
+    pipette_operation_type = pipette_group.keys()[0]
+
+    pipette_operation_info = pipette_group[pipette_operation_type]
+
+    #dicts of with keys to_aq_path, from_aq_path, volume_str
+    volume_transfers = []
+
+    if pipette_operation_type == 'transfer':
+        for transfer_op in pipette_operation_info:
+            volume_transfers.append({
+                'to_aq_path':transfer_op['to'],
+                'from_aq_path':transfer_op['from'],
+                'volume_str':transfer_op['volume']}
+                                    )
+
+    elif pipette_operation_type == 'distribute':
+        distribute_op = pipette_operation_info
+
+        for destination_info in distribute_op['to']:
+            volume_transfers.append({
+                'to_aq_path':destination_info['well'],
+                'from_aq_path':distribute_op['from'],
+                'volume_str':destination_info['volume']}
+                                    )
+
+    elif pipette_operation_type == 'consolidate':
+        consolidate_op = pipette_operation_info
+
+        for source_info in consolidate_op['from']:
+            volume_transfers.append({
+                'to_aq_path':consolidate_op['to'],
+                'from_aq_path':source_info['well'],
+                'volume_str':source_info['volume']}
+                                    )
+    elif pipette_operation_type == 'mix':
+        pass        
+    else:
+        raise NotImplementedError, "Uknown pipette operation, %s"%pipette_operation_type    
+
+
+    return volume_transfers
+
+
 def execute_pipette(instruction):
     """
     transfer, distribute, consolidate, mix are all pipette operations
@@ -84,51 +137,7 @@ def execute_pipette(instruction):
     for pipette_group in operation['groups']:
         
         
-        #each group can only have one key
-        
-        #check this assumption
-        
-        if len(pipette_group.keys())!=1:
-            raise NotImplementedError, "We aren't ready for groups to have multiple keys."
-        
-        pipette_operation_type = pipette_group.keys()[0]
-        
-        pipette_operation_info = pipette_group[pipette_operation_type]
-        
-        #dicts of with keys to_aq_path, from_aq_path, volume_str
-        volume_transfers = []
-        
-        if pipette_operation_type == 'transfer':
-            for transfer_op in pipette_operation_info:
-                volume_transfers.append({
-                    'to_aq_path':transfer_op['to'],
-                    'from_aq_path':transfer_op['from'],
-                    'volume_str':transfer_op['volume']}
-                                    )
-                
-        elif pipette_operation_type == 'distribute':
-            distribute_op = pipette_operation_info
-        
-            for destination_info in distribute_op['to']:
-                volume_transfers.append({
-                    'to_aq_path':destination_info['well'],
-                    'from_aq_path':distribute_op['from'],
-                    'volume_str':destination_info['volume']}
-                                        )
-                
-        elif pipette_operation_type == 'consolidate':
-            consolidate_op = pipette_operation_info
-
-            for source_info in consolidate_op['from']:
-                volume_transfers.append({
-                    'to_aq_path':consolidate_op['to'],
-                    'from_aq_path':source_info['well'],
-                    'volume_str':source_info['volume']}
-                                        )
-        elif pipette_operation_type == 'mix':
-            pass        
-        else:
-            raise NotImplementedError, "Uknown pipette operation, %s"%pipette_operation_type
+        volume_transfers = simplify_pipette_operations(pipette_group)
         
         
         for transfer_info in volume_transfers:
