@@ -293,7 +293,8 @@ def execute_run(run):
     """
     
     #ensure that the run is accepted
-    assert run.status=='accepted','Run must be in accepted state to execute. Currently %s'%run.status
+    assert run.status in ['accepted','in_progress'],\
+           'Run must be in accepted or in_progress state to execute. Currently %s'%run.status
     
     #sequence no asc
     ordered_instructions = run.instructions.all().order_by('sequence_no')
