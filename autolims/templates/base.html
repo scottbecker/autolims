@@ -20,8 +20,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="{% url 'projects' organization_subdomain=organization_subdomain %}">Projects</a></li>
-        <li><a href="{% url 'containers' organization_subdomain=organization_subdomain %}">Containers</a></li>
+        <li {% if 'containers' not in request.path %} class="active" {% endif %}><a href="{% url 'projects' organization_subdomain=organization_subdomain %}">Projects</a></li>
+        <li {% if 'containers' in request.path %} class="active" {% endif %}><a href="{% url 'containers' organization_subdomain=organization_subdomain %}">Containers</a></li>
         
          {% if organization_name %}        
         
