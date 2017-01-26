@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+import json
 
 register = template.Library()
 
@@ -23,3 +24,11 @@ def to_safe_label(value):
     Covert a label like 'plate 1' to plate_1
     """
     return _to_safe_label(value)
+
+
+@register.filter(is_safe=True)
+def format_json(d):
+    """
+    Covert a label like 'plate 1' to plate_1
+    """
+    return json.dumps(d)

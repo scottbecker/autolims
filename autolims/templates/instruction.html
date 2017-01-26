@@ -1,16 +1,65 @@
 {% load run_tags %} 
 
-Instruction goes here for instruction {{instruction.id}} <br />
+{% with instruction.operation as operation %}
 
-{% if instruction.operation.op == 'oligosynthesize' %}
+    {% if operation.op == 'oligosynthesize' %}
+    
+        <table class="table" >
+         <tbody>
+            {% for oligo in operation.oligos %}
+                <tr>
+                    <td ><a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{oligo.destination|aliquot_to_container_label}}'>{{oligo.destination}}</a></td>
+                    <td >        
+                        <dl class="dl-horizontal">
+                           <dt>Sequence</dt>
+                           <dd>{{oligo.sequence}}</dd>
+                           <dt>Scale</dt>
+                           <dd>{{oligo.scale}}</dd>
+                           <dt>Purification</dt>
+                           <dd>{{oligo.purification}}</dd>
+                        </dl>    
+                    </td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>  
+        
+        
+        
+    {% elif operation.op == 'spin' %}
+        
+         <dl class="dl-horizontal">
+            <dt>Object</dt>
+            <dd><a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{operation.object|to_safe_label}}'>{{operation.object}}</a></dd>
+            <dt>Acceleration</dt>
+            <dd>{{operation.acceleration}}</dd>
+            <dt>Duration</dt>
+            <dd>{{operation.duration}}</dd>
+            <dt>Flow Direction</dt>
+            <dd>{% firstof operation.flow_direction 'inward' %}</dd>
+            <dt>Spin Directions</dt>
+            <dd>{% firstof operation.spin_direction 'clockwise' %}</dd>
+         </dl>    
+    
+    {% endif %}
+    
+   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#raw_protocool_div{{instruction.id}}" aria-expanded="false" aria-controls="collapseExample">
+    Show/Hide Raw
+  </button>
+  <div class="collapse" id="raw_protocool_div{{instruction.id}}">
+    <div class="card card-block">
+    <pre id="raw_protocol_{{instruction.id}}">
+     </pre>
+    </div>
+  </div>
 
-{% for oligo in instruction.operation.oligos %}
+<script>
 
-<a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{oligo.destination|aliquot_to_container_label}}'>details</a>
+parsedJson{{instruction.id}} = {{operation|format_json|safe}};
 
+document.getElementById('raw_protocol_{{instruction.id}}').innerHTML =
+        JSON.stringify(parsedJson{{instruction.id}}, null, '  ');
+</script>
 
-
-{% endfor %}
-
-{% endif %}
+{% endwith %}
 
