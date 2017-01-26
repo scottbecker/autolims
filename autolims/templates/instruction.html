@@ -70,36 +70,16 @@
         <tbody>
 
         {% for pipette_group in operation.groups %}
+                
+            {% with pipette_group|to_simple_transfer as simple_transfers %}        
 
-            {% for pipette_operation_type, pipette_operation_info in pipette_group.items %}
-
-                {% if pipette_operation_type == 'transfer' %}
-
-    
-                    {% for transfer_op in pipette_operation_info %}
-                    
-                        <tr>
-                            <td> Transfer {{transfer_op.volume}} from {% include 'container_link.html' with object=transfer_op.from %} to {% include 'container_link.html' with object=transfer_op.to %}</td>
-                        </tr>
-                    
-                    {% endfor %}
-                    
-                {% elif pipette_operation_type == 'distribute' %}
-
-    
-                    {% with distribute_op as pipette_operation_info  %}
-                    
-                       
-                    
-                    {% endwith %}
-                    
-                {% endif %}
-                    
-            {% endfor %}
+                {% for transfer_op in simple_transfers %}     
+                    <tr>
+                        <td> Transfer {{transfer_op.volume_str}} from {% include 'container_link.html' with object=transfer_op.from_aq_path %} to {% include 'container_link.html' with object=transfer_op.to_aq_path %}</td>
+                    </tr>
+                {% endfor %}
+            {% endwith %}
         {% endfor %}
-              
-
-
         
           </tbody>
        </table>       

@@ -2,6 +2,8 @@ from django import template
 from django.template.defaultfilters import stringfilter
 import json
 
+from autoprotocol_interpreter import simplify_pipette_operations
+
 from autolims.models import Resource
 from helper_funcs import str_respresents_int
 
@@ -45,3 +47,7 @@ def resource_id_to_name(resource_id):
         resource = Resource.objects.get(id=resource_id)
         
     return resource.name
+
+@register.filter(is_safe=True)
+def to_simple_transfer(pipette_group):
+    return simplify_pipette_operations(pipette_group)
