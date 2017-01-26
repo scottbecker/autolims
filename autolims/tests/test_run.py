@@ -28,11 +28,11 @@ class RunTestCase(TestCase):
         
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19u4jkqxhbt8
         with open(os.path.join(os.path.dirname(__file__),'data','oligosynthesis.json')) as f:
-            autoprotocol = json.loads(f.read())
+            protocol = json.loads(f.read())
     
         run = Run.objects.create(title='Oligosynthesis Run',
                                  test_mode=False,
-                                 autoprotocol=autoprotocol,
+                                 protocol=protocol,
                                  project = self.project,
                                  owner=self.user)   
         assert isinstance(run,Run)
@@ -62,16 +62,16 @@ class RunTestCase(TestCase):
         
         #same as https://secure.transcriptic.com/becker-lab/p19aqhcbep8ea/runs/r19uqqkmr5u8f
         with open(os.path.join(os.path.dirname(__file__),'data','pellet_bacteria.json')) as f:
-            autoprotocol = json.loads(f.read())        
+            protocol = json.loads(f.read())        
         
-        #update the autoprotocol to reference the correct id post import
+        #update the protocol to reference the correct id post import
         
-        autoprotocol['refs']['bacteria_tube']['id'] = existing_container.id
+        protocol['refs']['bacteria_tube']['id'] = existing_container.id
         
         
         run = Run.objects.create(title='Pellet Bacteria Run',
                          test_mode=False,
-                         autoprotocol=autoprotocol,
+                         protocol=protocol,
                          project = self.project,
                          owner=self.user)   
         assert isinstance(run,Run)

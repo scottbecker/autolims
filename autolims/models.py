@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 from autoprotocol import Unit
 from transcriptic_tools.utils import round_volume
 from db_file_storage.model_utils import delete_file, delete_file_if_needed
-
+from helper_funcs import str_respresents_int
 
 #create token imports
 from django.db.models.signals import post_save
@@ -197,10 +197,11 @@ class Run(models.Model):
             
             if not self.title:
                 self.name = 'Run %s'%self.id
-            
+        
         #new run
         else:
             new_run = True
+            self.convert_transcriptic_resource_ids()
             
         if not isinstance(self.properties,dict):
             self.properties = {}
@@ -215,13 +216,21 @@ class Run(models.Model):
             self.title = self.name = 'Run %s'%self.id
             super(Run, self).save(*args, **kw)
         
-        
-        
-        
         if new_run:
             self.create_instructions()
             self.populate_containers()            
     
+    def convert_transcriptic_resource_ids(self):
+        for operation in self.protocol['instructions']:
+            if operation['op'] != 'provision': continue
+            if not isinstance(operation['resource_id'], basestring) or \
+               str_respresents_int(operation['resource_id']): continue
+            
+            resource = Resource.objects.get(transcriptic_id = operation['resource_id'])
+            
+            operation['resource_id'] = resource.id
+                                   
+                                
     def create_instructions(self):
         for i, instruction_dict in enumerate(self.protocol['instructions']):
             instruction = Instruction.objects.create(run = self,

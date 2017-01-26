@@ -4,11 +4,11 @@
 
     {% if operation.op == 'oligosynthesize' %}
     
-        <table class="table" >
+        <table class="table table-striped" >
          <tbody>
             {% for oligo in operation.oligos %}
                 <tr>
-                    <td ><a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{oligo.destination|aliquot_to_container_label}}'>{{oligo.destination}}</a></td>
+                    <td >{% include 'container_link.html' with object=oligo.destination %}</td>
                     <td >        
                         <dl class="dl-horizontal">
                            <dt>Sequence</dt>
@@ -30,7 +30,7 @@
         
          <dl class="dl-horizontal">
             <dt>Object</dt>
-            <dd><a class='secondary-pill-toggle' data-toggle="pill"  href='#c_{{operation.object|to_safe_label}}'>{{operation.object}}</a></dd>
+            <dd>{% include 'container_link.html' with object=operation.object %}</dd>
             <dt>Acceleration</dt>
             <dd>{{operation.acceleration}}</dd>
             <dt>Duration</dt>
@@ -41,11 +41,36 @@
             <dd>{% firstof operation.spin_direction 'clockwise' %}</dd>
          </dl>    
     
+    {% elif operation.op == 'provision' %}
+        <dl class="dl-horizontal">
+            <dt>Resource</dt>
+            <dd>{{operation.resource_id|resource_id_to_name}}</dd>
+            <dt>Transfer</dt>
+            <dd>
+                 <table class="table table-striped" >
+                    <tbody>
+                       {% for destination_info in operation.to %}
+                           <tr>
+                               <td>{{destination_info.volume}} to {% include 'container_link.html' with object=destination_info.well %}</td>
+                               
+                           </tr>
+                       {% endfor %}
+                     </tbody>
+                   </table>              
+            
+                {% include 'container_link.html' with object=oligo.destination %}            
+            
+            </dd>
+            
+        </dl>
+    
+    
     {% endif %}
     
    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#raw_protocool_div{{instruction.id}}" aria-expanded="false" aria-controls="collapseExample">
     Show/Hide Raw
   </button>
+  <br />
   <div class="collapse" id="raw_protocool_div{{instruction.id}}">
     <div class="card card-block">
     <pre id="raw_protocol_{{instruction.id}}">
