@@ -29,11 +29,7 @@
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Mark In-Progress</button>
   </form>  
-  <form style='display:inline' method="POST" action="{{request.path}}/execute/">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-success">Mark Complete (Execute Run)</button>
-  </form>
-
+  
 {% elif run.status == 'in_progress' %}
 
   <form style='display:inline' method="POST" action="{{request.path}}/abort/">
@@ -44,6 +40,15 @@
 {% elif run.status == 'complete' %}
 
    Completed on {{run.completed_at}}
+  
+{% endif %}
+
+{% if run.status == 'accepted' or run.status == 'in_progress'  %}
+
+<form style='display:inline' method="POST" action="{{request.path}}/execute/">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">Mark Complete (Execute Run)</button>
+  </form>
   
 {% endif %}
 
