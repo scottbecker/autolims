@@ -1,4 +1,4 @@
-# Project Title
+# AutoLIMS
 
 autolims allows experiments to be executed by humans and lab robots working together
 
@@ -7,7 +7,7 @@ autolims allows experiments to be executed by humans and lab robots working toge
 #install db dependencies
 brew install mysql postgres
 
-# start mysql & postgres if not daemonized
+### start mysql & postgres if not daemonized
 mysql.server start
 pg_ctl -D /usr/local/var/postgres start
 
