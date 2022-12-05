@@ -1,6 +1,6 @@
 Django==1.10.5
 Markdown==2.6.7
-Pillow==2.7.0
+Pillow==latest
 Pint==0.7.2
 Pygments==2.2.0
 argparse==1.2.1
